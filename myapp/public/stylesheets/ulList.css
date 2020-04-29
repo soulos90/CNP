@@ -13,6 +13,8 @@
 
 /* styling for main <ul> */
 .ulList{
+    --circleSize: 50px;
+
     display: flex;
     justify-content: center;
     align-content: center;
@@ -28,28 +30,26 @@
     display: flex;
     flex-direction: row;
     align-content: center;
-    align-items: center;
-    margin-bottom: 25px;
+    align-items: stretch;
+    margin-bottom: 10px;
     border-radius: 12px;
     overflow: hidden;
-    padding-left: 20px;
-    background: var(--lightGray1);
-    box-shadow: 0px 0px 6px var(--darkGray2);
+    padding-left: 15px;
+    box-shadow: 0px 0px 2px var(--darkGray4);
 }
 
 .ulList li p{
-    margin: 30px 0px;
+    align-self: center;
     color: var(--darkGray3);
-    font-size: 2.5em;
-    text-align: left;
-    flex-grow: 2;
+    font-size: 16px;
+    margin: 5px 0px 5px 0px;
 }
 
 .ulList li button{
-    font-size: 4em;
+    font-size: 16px;
     justify-self: center;
     align-self: stretch;
-    width: 10vw;
+    width: 3vw;
     border: none;
     outline: none;
     color: var(--darkGray2);
@@ -65,30 +65,9 @@
     box-shadow: inset 0px 0px 5px 2px var(--darkGray3);
 }
 
-.ulList li .greenButton{
-    background: var(--green2) !important;
-}
-
-.ulList li .yellowButton {
-    background: var(--yellow2) !important;
-}
-
-.ulList li .redButton{
-    background: var(--red2) !important;
-}
-
-.ulList li .darkRedButton{
-    color: var(--lightGray2);
-    background: var(--red3) !important;
-}
-
-.ulList .addElement{
-    background: var(--yellow1) !important;
-}
-
 .ulList .addElement p{
     text-align: center;
-    color: var(--darkGray3) !important;
+    color: var(--lightGray2) !important;
 }
 
 .ulList .addElement a{
@@ -103,66 +82,46 @@
     padding: 30px 0px;
 }
 
-.ulList .addIcon{
+.ulList .leftCircle{
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 150px;
-    height: 150px;
-    margin-left: -50px;
+    width: var(--circleSize);
+    height: var(--circleSize);
+    margin-left: calc(var(--circleSize) * 0.4 * (-1));
     border-radius: 50%;
     overflow: hidden;
-    font-size: 105px;
-    background: var(--yellow2);
-    color: var(--blue4);
-    box-shadow: 0px 0px 5px var(--darkGray3);
+    font-size: var(--circleSize);
+    color: var(--lightGray2);
+    box-shadow: 0px 0px 2px var(--darkGray3);
     transition: width 0.1s ease-in-out, height 0.1s ease-in-out, 
         font-size 0.1s ease-in-out, margin 0.1s ease-in-out;
 }
 
-.ulList .addIcon i{
+.ulList .profileList:hover .leftCircle{
+    width: calc(var(--circleSize) + 10px);
+    height: calc(var(--circleSize) + 10px);
+    margin-left: calc((var(--circleSize) + 10px) / 2 * (-1));
+}
+
+.ulList .leftCircle i{
     align-self: center !important;
+    font-size: calc(var(--circleSize) * 0.6);
 }
 
 .ulList .clickableItem:hover{cursor: pointer !important;}
 
-.ulList .clickableItem:hover img{
-    width: 180px;
-    height: 180px;
-}
-
-.ulList .clickableItem:hover .addIcon{
-    width: 180px;
-    height: 180px;
-    font-size: 120px;
-    margin-left: -65px;
-}
-
 .ulList .profileList{
     overflow: visible;
     align-items: center;
-    width: 25%;
-    height: 130px;
-    margin: 20px 40px;
-    background: white;
+    height: 40px;
+    margin: 10px 20px;
     padding-left: 0;
+    width: 40%;
  }
 
 .ulList .profileList p{
     text-align: center;
-    color: var(--darkGray4);
-}
-
-.ulList .profileList img{
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 5px solid var(--yellow1);
-    margin: 0;
-    margin-left: -60px;
-    box-shadow: 0px 0px 5px var(--darkGray3);   
-    transition: width 0.1s ease-in-out, height 0.1s ease-in-out;
 }
 
 .blackAndWhite{
@@ -178,19 +137,46 @@
     background: repeating-linear-gradient(
         45deg,
         white,
-        white 40px,
-        var(--yellow1) 40px,
-        var(--yellow1) 80px
+        white 20px,
+        var(--accentColor2Light) 20px,
+        var(--accentColor2Light) 40px
       ) !important;
+      
   }
+.stripedBackground p{
+    color: white;
+    mix-blend-mode: difference;
+    filter: brightness(200%);
+}
 
 @media screen and (max-width: 1200px){
-    .ulList li button{
-        width: 18%;
-    }
+    .ulList li button{width:9vw;}
 
     .ulList .profileList{
         width: 80%;
         margin-right: -15px;
+        margin-bottom: 25px;
+    }
+
+    .ulList li{ height: 90px !important;}
+
+    .ulList li p{
+        font-size: 40px !important;
+    }
+
+    .ulList li i{
+        font-size: 30px;
+    }
+
+    .ulList .leftCircle{
+        width: calc(var(--circleSize) * 2);
+        height: calc(var(--circleSize) * 2);
+        margin-left: calc(var(--circleSize)* (-1));
+    }
+
+    .ulList .profileList:hover .leftCircle{
+        width: calc(var(--circleSize) * 2 + 20px);
+        height: calc(var(--circleSize) * 2 + 20px);
+        margin-left: calc((var(--circleSize) + 10px) * (-1));
     }
 }

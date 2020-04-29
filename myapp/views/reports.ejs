@@ -17,13 +17,15 @@
               <tr><th colspan=2><%= report.name %></th></tr>
             </thead>
             <tbody>
+              <tr>
+                <td class="center">
+                  Potty Breaks: <%= report.pottyBreaks %> (<%= report.pottyAccidents %> Accidents)
+                </td>
+              </tr>
               <% report.listOfActivities.forEach((activity, index) => {%>
               <tr>
-                <td class="activity">
+                <td class="left">
                   <%= activity.ActivityName %>
-                </td>
-                <td class="timeStamp">
-                  <%= activity.CurrentTime %>
                 </td>
               </tr>
               <% }) %>

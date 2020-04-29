@@ -17,83 +17,95 @@
     <script src="/javascripts/jquery.prettydropdowns.js"></script>
   </head>
   <body>
-    <div id="accordion">      
-      <h3 class="accordion">Tasks</h3>
-        <div class="accordionPanel">
+    <div class="flex spaceBetween centerFlexMobile flexWrap width90 center">
+      
+      <!-- ------------ TASKS PANEL ------------ -->
+      <div id="tasksPanel" class="mobilePanel lightGray1-BG margin10 borderRadiusSmall hideOverflow minWidth450px width60">
+        <div class="darkGray3-BG mediumPadding flex spaceBetween flexAlignCenter">
+          <p class="marginLeft10 lightText font25px">Tasks</p>
+          <a onclick="openForm('newTaskForm')" class="marginRight10 lightPadding accent2Light-text font15px">Add New</a>
+        </div>
+        <div class="heavyPadding maxHeight500px">
           <ul id="tasksList" class="ulList">
             <% if (tasks.length > 0) { %>            
               <% tasks.forEach((task, index) => { %>
-                <li> 
-                  <a class="checkBox" onclick="taskComplete(this, '<%= task.TaskId %>') "></a>
-                  <p><%= task.NoteContent %></p> 
-                  <% if (task.Priority == 0) { %>
-                    <button class="greenButton" onclick="changePriority('<%= task.TaskId %>',0)"><i class="far fa-flag"></i></button>  
-                  <% } else if(task.Priority == 1) { %>
-                    <button class="yellowButton" onclick="changePriority('<%= task.TaskId %>',1)"><i class="far fa-flag"></i></button>
-                  <% } else { %>
-                    <button class="redButton" onclick="changePriority('<%= task.TaskId %>',2)"><i class="far fa-flag"></i></button>
-                  <% } %>
-                  <button class="darkRedButton" onclick="deleteTask('<%= task.TaskId %>')"><i class="far fa-trash-alt"></i></button>
+                <li class="spaceBetween"> 
+                  <div class="flex">
+                    <a class="checkBox" onclick="taskComplete(this, '<%= task.TaskId %>') "></a>
+                    <p><%= task.NoteContent %></p> 
+                  </div>
+                  
+                  <div class="flex font25px">
+                    <% if (task.Priority == 0) { %>
+                      <button class="accent2Light-BG" onclick="changePriority('<%= task.TaskId %>',0)"><i class="far fa-flag"></i></button>  
+                    <% } else if(task.Priority == 1) { %>
+                      <button class="accent3Light-BG" onclick="changePriority('<%= task.TaskId %>',1)"><i class="far fa-flag"></i></button>
+                    <% } else { %>
+                      <button class="accent4Light-BG" onclick="changePriority('<%= task.TaskId %>',2)"><i class="far fa-flag"></i></button>
+                    <% } %>
+                    <button class="accent4-BG" onclick="deleteTask('<%= task.TaskId %>')"><i class="lightText far fa-trash-alt"></i></button>
+                  </div>
+                  
               <% }) %>
-              
             <% } %>
-            <li class="addElement">
-              <a title="Add Task" onclick="addTask()">New Task +</a>
-            </li>
           </ul>
+          <!-- --------------------- New Task Form --------------------- -->
           <div id="newTaskForm" class="formWindow">
-            <!-- newStudentForm content -->
             <div class="formWindow-content">
               <span class="close" onclick="closeForm()">&times;</span>
-              <ul>
-                <li class="formTitle">Add a Task</li>
-                <li><input type="text" id="newTaskName" placeholder="Task Name"></li>
-                <li>
-                  <label for="cars">Select a priority</label>
-                  <select id="newTaskPriority">
-                    <option value=0>Low</option>
-                    <option value=1>Medium</option>
-                    <option value=2>High</option>
-                  </select>
-                </li>
-                <li><a class="formSubmitButton" id="newTaskSubmit" onclick="addTaskPost()">Add</a></li>
-                
-              </ul>
+              <p class="font50px centerText accent2Light-text marginBottom40">Add a Task</p>
+              
+              <div class="flex spaceBetween flexAlignCenter flexCollapseMobile marginBottom40 marginBelowChildren10 marginBottom40 width100">
+                <div class="flex width50 width90Mobile">
+                  <div class="inputWithIcon width100 white-BG">
+                    <input type="text" id="newTaskName" placeholder="Task Name">
+                  </div>
+                </div>
+
+                <div id="newTaskPriority" class="flex flexCenter width40 width90Mobile">
+                  <a id="low" onclick="toggleableToggled(this)" class="toggleable toggled">Low</a>
+                  <a id="mid" onclick="toggleableToggled(this)" class="toggleable">Mid</a>
+                  <a id="high" onclick="toggleableToggled(this)" class="toggleable">High</a>
+                </div>
+              </div>
+
+              <div class="flex flexCenter">
+                <a class="formSubmitButton flexGrow1 maxWidth600px" id="newTaskSubmit" onclick="addTaskPost()">Add</a>
+              </div>
             </div>
-          </div>
+          </div> <!-- End new task form -->
         </div>
-      <h3 class="accordion">Maintenance Log</h3>
-        <div class="accordionPanel">
+      </div> <!-- End Tasks Section -->
+
+       <!-- ------------ LOG PANEL ------------ -->
+      <div id="logPanel" class="mobilePanel lightGray1-BG margin10 borderRadiusSmall hideOverflow minWidth450px width30">
+        <div class="darkGray3-BG mediumPadding flex spaceBetween flexAlignCenter">
+          <p class="marginLeft10 lightText font25px">Log</p>
+          <a onclick="clearLog()" class="marginRight10 lightPadding accent4Light-text font15px">Clear</a>
+        </div>
+        <div class="heavyPadding maxHeight500px">
+          
           <ul id="comptasksList" class="ulList">
             <% if (compTasks.length > 0) { %> 
-              <table class="customTable halfWidth">          
-                <tbody>
-                  <% compTasks.forEach((task, index) => {%>
-                  <tr>
-                    <td class="left">
-                      <%= task.NoteContent %>
-                    </td>
-                    <td class="right green thirdWidth">
-                      <%= task.stamp %>
-                    </td>
-                  </tr>
-                  <% }) %>
-                </tbody>
+              <% compTasks.forEach((task, index) => {%>
+              <li class="flex spaceBetween">
+                <p><%= task.NoteContent %></p>
+                <div class="width40 lightGray3-BG centerText">
+                  <p><%= task.CompletedTime.toDateString() %></p>
+                </div>
+              </li>
+              <% }) %>
+            <% } else {%>
+              <li><p>Log is empty</p></li>
             <% } %>
           </ul>
         </div>
-    </div>
-
-    
+      </div>
+    </div> <!-- CONTAINER END -->
   </body>
-  <script>
-    $( function() {
-      $( "#accordion" ).accordion({
-        collapsible: true,
-        active: false
-      });
-    } );
-  </script>
+
+  <script src="/javascripts/tabs.js"></script>
+  
   <script>
     $dropdown = $('.pretty-classic').prettyDropdown({
         classic: true,
@@ -133,10 +145,16 @@
       httpPutAsync(theUrl,data,callback);  
     }
 
+    function clearLog(){}
+
     function addTaskPost(){
       var theUrl = window.location.href+'/addtask';
+      var priority;
+      if(isToggled("low")){priority = 0;}
+      else if(isToggled("mid")){priority = 1;}
+      else {priority = 2;}
       var data = "name=" + document.getElementById("newTaskName").value +
-      "&priority=" +  document.getElementById("newTaskPriority").value;
+      "&priority=" + priority;
       var callback = reloadIt;
       httpPostAsync(theUrl,data,callback);
     }
@@ -150,15 +168,16 @@
       httpPostAsync(theUrl, data, callback);
     }
     function taskComplete(element, task){
+      var parent = element.parentElement.parentElement;
       checkboxClicked(element);
-      $(element.parentElement.getElementsByTagName("button")).animate({width:'toggle'},200);
-      $(element.parentElement.getElementsByTagName("p")).animate({color: "#EEEEEE"},200);
+      $(parent.getElementsByTagName("button")).animate({width:'toggle'},200);
+      $(parent.getElementsByTagName("p")).animate({color: "#EEEEEE"},200);
 
-      $(element.parentElement).animate({backgroundColor: "#5E895F"}, 200);
+      $(parent).animate({backgroundColor: "#5E895F"}, 200);
 
       
       setTimeout(function(){
-        $(element.parentElement).slideUp("fast");
+        $(parent).slideUp("fast");
         $(element).animate({bottom: "200px"}, 100);
         //element.parentElement.style.display = "none";
       }, 500);

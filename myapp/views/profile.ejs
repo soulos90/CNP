@@ -12,125 +12,119 @@
         <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="/javascripts/utilityScripts.js"></script>
-        <script src="/javascripts/birthdayDropdown.js"></script>
-        <script src="/javascripts/jquery.prettydropdowns.js"></script>
         
     </head>
     <body>
 
-      <div class="profileContainer">
-        <div class="tabsSection">
-          <div id="tabs">
-            <ul class="tabs">
-              <li><a href="#tabs-1">Info</a></li>
-              <li><a href="#tabs-2">Schedule</a></li>
-              <li><a href="#tabs-3">Statistics</a></li>
-            </ul>
-            <div id="tabs-1" class="tabContent">
-              <table class="infoTable">
-                <tr>
-                  <td>
-                    <ul>
-                      <li class="formTitle">Guardian #1</li>
-                      <li><input name=”notASearchField” type="text" id="guardian1Name" placeholder="Guardian Name" value=<%- student.RelativeName %>></li>
-                      <li><input name=”notASearchField” type="text" id="guardian1Email" placeholder="Guardian Email" value=<%- student.RelativeEmail %>></li>
-                      <li><input name=”notASearchField” type="text" id="guardian1Number" placeholder="Guardian's Phone Number" value=<%- student.RelativePhone %>></li>
-                    </ul>
-                  </td>
-                  <td>
-                    <ul>
-                      <li class="formTitle">Guardian #2</li>
-                      <li><input name=”notASearchField” type="text" id="guardian2Name" placeholder="Guardian Name" value=<%- student.RelativeName2 %>></li>
-                      <li><input name=”notASearchField” type="text" id="guardian2Email" placeholder="Guardian Email" value=<%- student.RelativeEmail2 %>></li>
-                      <li><input name=”notASearchField” type="text" id="guardian2Number" placeholder="Guardian's Phone Number" value=<%- student.RelativePhone2 %>></li>
-                    </ul>
-                  </td>
-                </tr>
-              </table>
-            </div>
-            
-            <div id="tabs-2" class="tabContent">
-              <div class="fullDay">
-                <label for="fullDay" class="switchLabel">Full Day</label>
-                <div>
-                  <label class="switch">
-                    <input type="switchColumn" id="fullDay" name="fullDay" onload="loadCheckBox(this, <%= student.DayType %>)">
-                    <span class="slider round"></span>
-                  </label>
-                </div>
-              </div>
-              <ul id="schedule" class="week">
-                <li id="mon" value="<%- student.Monday %>" onclick="weekdaySelected(this)"><a>M</a></li>
-                <li id="tue" value="<%- student.Tuesday %>" onclick="weekdaySelected(this)"><a>T</a></li>
-                <li id="wed" value="<%- student.Wednesday %>" onclick="weekdaySelected(this)"><a>W</a></li>
-                <li id="thu" value="<%- student.Thursday %>" onclick="weekdaySelected(this)"><a>T</a></li>
-                <li id="fri" value="<%- student.Friday %>" onclick="weekdaySelected(this)"><a>F</a></li>
-              </ul>
-            </div>
+      <div class="contentWithSidebar width90 center">
 
-            <div id="tabs-3" class="tabContent">
-              <p>Proin elit arcu, rutrum commodo, vehicula tempus, commodo a, risus. Curabitur nec arcu. Donec sollicitudin mi sit amet mauris. Nam elementum quam ullamcorper ante. Etiam aliquet massa et lorem. Mauris dapibus lacus auctor risus. Aenean tempor ullamcorper leo. Vivamus sed magna quis ligula eleifend adipiscing. Duis orci. Aliquam sodales tortor vitae ipsum. Aliquam nulla. Duis aliquam molestie erat. Ut et mauris vel pede varius sollicitudin. Sed ut dolor nec orci tincidunt interdum. Phasellus ipsum. Nunc tristique tempus lectus.</p>
+        <!-- -------------------- LEFT SIDE --------------------- -->
+        <div class="flex flexColumn width65 flexAlignCenter width100Mobile">
+
+          <!-- -------------------- INFO PANEL --------------------- -->
+          <div id="infoPanel" class="mobilePanel lightGray1-BG margin10 borderRadiusSmall hideOverflow minWidth450px width100">
+            <div class="flexContainer spaceAround flexWrap heavyPadding">
+              <ul class="width40 width100Mobile">
+                <li class="darkText largeFont marginBottom10">Guardian #1</li>
+                <li><input class="lineInput"name="guardian1Name" type="text" id="guardian1Name" placeholder="Guardian Name" value=<%- student.RelativeName %>></li>
+                <li><input class="lineInput" name="guardian1Email" type="text" id="guardian1Email" placeholder="Guardian Email" value=<%- student.RelativeEmail %>></li>
+                <li><input class="lineInput marginBottom30" name="guardian1Number" type="text" id="guardian1Number" placeholder="Guardian's Phone Number" value=<%- student.RelativePhone %>></li>
+              </ul>
+
+              <ul class="width40 width100Mobile">
+                <li class="darkText largeFont">Guardian #2</li>
+                <li><input class="lineInput" name="guardian2Name" type="text" id="guardian2Name" placeholder="Guardian Name" value=<%- student.RelativeName2 %>></li>
+                <li><input class="lineInput" name="guardian2Email" type="text" id="guardian2Email" placeholder="Guardian Email" value=<%- student.RelativeEmail2 %>></li>
+                <li><input class="lineInput" name="guardian2Number" type="text" id="guardian2Number" placeholder="Guardian's Phone Number" value=<%- student.RelativePhone2 %>></li>
+              </ul>
+              
             </div>
           </div>
-        </div>
 
+
+          <div class="flex flex width100 flexCollapseMobile spaceBetween centerFlexMobile">
+          <!-- -------------------- EXTRA INFO PANEL --------------------- -->
+            <div id="extraInfoPanel" class="mobilePanel width60 lightGray1-BG borderRadiusSmall hideOverflow width90Mobile">
+              <div class="flexContainer flexColumn spaceAround flexWrap heavyPadding">
+                <div class="flex flexColumn width100 marginBottom30">
+                  <p>Allergies</p>
+                  <textarea id="allergies"><%= student.Allergies %></textarea>
+                </div>
+                <div class="flex flexColumn width100">
+                  <p>Special Accommodations</p>
+                  <textarea id="accommodations"><%= student.Accommodation %></textarea>
+                </div>
+              </div>
+            </div>
+  
+            <!-- -------------------- SCHEDULE PANEL --------------------- -->
+            <div id="schedulePanel" class="mobilePanel lightGray1-BG borderRadiusSmall hideOverflow marginLeft10 flexGrow1 width90Mobile">
+              <div class="flexContainer flexColumn flexCenterMobile spaceAround flexWrap heavyPadding">
+                <div class="flex flexCenter flexAlignCenter width100 marginBottom30">
+                  <% if(student.DayType == 1) { %>
+                    <a id="fullDay" onclick="toggleableToggled(this)" class="toggleable toggled">Full Day</a>
+                    <a id="halfDay" onclick="toggleableToggled(this)" class="toggleable">Half Day</a>
+                  <% } else { %>
+                    <a id="fullDay" onclick="toggleableToggled(this)" class="toggleable">Full Day</a>
+                    <a id="halfDay" onclick="toggleableToggled(this)" class="toggleable toggled">Half Day</a>
+                  <% } %>
+                </div>
+                <ul id="schedule" class="selectableList flexWrap width100 flexCenter">
+                  <li id="mon" value="<%- student.Monday %>" onclick="selectableSelected(this)"><a>M</a></li>
+                  <li id="tue" value="<%- student.Tuesday %>" onclick="selectableSelected(this)"><a>T</a></li>
+                  <li id="wed" value="<%- student.Wednesday %>" onclick="selectableSelected(this)"><a>W</a></li>
+                  <li id="thu" value="<%- student.Thursday %>" onclick="selectableSelected(this)"><a>T</a></li>
+                  <li id="fri" value="<%- student.Friday %>" onclick="selectableSelected(this)"><a>F</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          </div>
+          
         
 
-        <div class="profileSection">
-          <ul class="profileList">
+        <!-- -------------------- STUDENT PROFILE (RIGHT SIDE) --------------------- -->
+        <div class="profileSection lightGray1-BG">
+          <ul class="width90 flexListColumn heavyPadding">
             <li>
-              <label for="file-input" class="imageContainer tooltip">
+              <label for="file-input" class="imageContainer tooltip marginBottom40 marginTop20">
                 <div class="edit-image-tooltip">
                   <span class="tooltiptext">Edit Image</span>
                 <img src="/uploads/images/<%- student.Img %>" onerror="this.src='/uploads/images/default.png'">
               </label>
               <form action="<%-student.StudentId%>/upload" method="POST" enctype="multipart/form-data">
                 <div class="file-field input-field hiddenUpload">
-                  <input id="file-input" name="myImage" type="file" onchange="form.submit()">
+                  <input id="file-input" name="student-image-id" type="file" onchange="form.submit()">
                   </div>
               </form>
             </li>
-            <li>
-              <p1><font color="red"><%- upload_error_message %></font></p1>
-              <table class="studentTable">
-                <tr>
-                  <td class="width20"><label>NAME</label></td>
-                  <td class="width100 left"><input class="hiddenInput" id="studentName" value="<%- student.StudentName %>"></td>
-                </tr>
-                <tr>
-                  <td class="width20"><label>BIRTHDAY</label></td>
-                  <td class="width80">
-                    <input id="studentbirthday" value="<%- student.Birthdate %>" style="display: none;"></input>
-                    <div class="flexRowSpaceAround">
-                      <select id="year" class="pretty-classic" onchange="genDays();">
-                      </select>
-
-                      <select id="month" class="pretty-classic" onchange="genDays();">
-                        <option value="01">Jan</option>
-                        <option value="02">Feb</option>
-                        <option value="03">Mar</option>
-                        <option value="04">Apr</option>
-                        <option value="05">May</option>
-                        <option value="06">Jun</option>
-                        <option value="07">Jul</option>
-                        <option value="08">Aug</option>
-                        <option value="09">Sep</option>
-                        <option value="10">Oct</option>
-                        <option value="11">Nov</option>
-                        <option value="12">Dec</option>
-                      </select>
-        
-                      <select id="day" class="pretty-classic">
-                      </select>
-                    </div>
-                  </td>
-                </tr>
-              </table>
+            <li class="spaceBetween">
+              <label class="width30">NAME</label>
+              <input class="hiddenInput rightText" name="studentName" id="studentName" value=<%- student.StudentName %>>
+            <li class="spaceBetween marginBottom40">
+              <label class="width30">BIRTHDAY</label>
+              <input id="studentbirthday" value="<%- student.Birthdate %>" style="display: none;"></input>
+              <div class="flex flexRight flexAlignCenter width100 width90Mobile font15px">
+                <div class="inputWithIcon width20 white-BG marginRight10">
+                  <input id="month" placeholder="MM" maxlength="2"></input>
+                </div>
+                <div class="inputWithIcon width20 white-BG marginRight10">
+                  <input id="day" placeholder="DD" maxlength="2"></input>
+                </div>
+                <div class="inputWithIcon width30 white-BG">
+                  <input id="year" placeholder="YYYY" maxlength="4"></input>
+                </div>
+              </div>
             </li>
             <li class="profileButtons">
-              <a onclick="saveStudent()" class="saveButton">Save Changes</a>
-              <a onclick="deleteStudent(this)" class="deleteButton">Delete Student</a>
+                <a onclick="deleteStudent(this)" class="deleteButton">Delete Student</a>
+                <a onclick="saveStudent()" class="saveButton">Save Changes</a>
             </li>
+            <form action="<%-student.StudentId%>/delete-student" id="delete-student-form" method="POST"></form>
+              <label><font color="green"><%- messages.upload_successful %></font></label>
+              <label><font color="green"><%- messages.changes_saved %></font></label>
+              <label><font color="red"><%- messages.changes_error %></font></label>
+              <label><font color="red"><%- messages.upload_error %></font></label>
           </ul>
         </div>
       </div>
@@ -143,6 +137,8 @@
       } );
     </script>
 
+    
+
     <script>
       var days = document.getElementById("schedule").getElementsByTagName("li");
       var length = days.length;
@@ -152,61 +148,49 @@
         for (var i = 0; i < length; i++){
           val = days[i].getAttribute("value");
           if(val == 1){
-            days[i].classList += " selectedDay";
+            days[i].classList += " selectedElement";
           }
           else {
-            days[i].classList.remove("selectedDay");
+            days[i].classList.remove("selectedElement");
           }
         }  
+
+        var birthday = new Date(document.getElementById('studentbirthday').value);
+        document.getElementById('month').value = birthday.getMonth() + 1;
+        document.getElementById('day').value = birthday.getDate();
+        document.getElementById('year').value = birthday.getFullYear();
       });
 
-      $dropdown = $('.pretty-classic').prettyDropdown({
-        classic: true,
-        height: 30,
-        hoverIntent: -1
-      });
-      
+
+
       function saveStudent(){
-        var temp = window.location.href.split('/');
-        var theUrl = temp[0];
-        for(var i = 1; i < temp.length - 2;++i){
-          theUrl = theUrl + '/' + temp[i];
-        }
+        
+        var data = 
+          `studentName=${document.getElementById('studentName').value}` +
+          `&mon=${isDaySelected("mon")}` +
+          `&tue=${isDaySelected("tue")}` +
+          `&wed=${isDaySelected("wed")}` +
+          `&thu=${isDaySelected("thu")}` +
+          `&fri=${isDaySelected("fri")}` +
+          `&fullDayFlag=${isToggled("fullDay")}` +
+          `&birthdate=${document.getElementById("year").value}/${document.getElementById("month").value}/${document.getElementById("day").value}` +
+          `&guardian1Name=${document.getElementById('guardian1Name').value}` +
+          `&guardian1Email=${document.getElementById('guardian1Email').value}` +
+          `&guardian1Number=${document.getElementById('guardian1Number').value}` +
+          `&guardian2Name=${document.getElementById('guardian2Name').value}` +
+          `&guardian2Email=${document.getElementById('guardian2Email').value}` +
+          `&guardian2Number=${document.getElementById('guardian2Number').value}` +
+          `&allergies=${document.getElementById('allergies').value}` +
+          `&accommodations=${document.getElementById('accommodations').value}`;
+        
+        httpPostAsync(`${window.location.href}/save-changes`, data, reloadIt);
 
-        var theUrl = theUrl + '/savestudent';
-        var birthdate = document.getElementById("birthdateyear").value + "-" + document.getElementById("birthdatemonth").value + "-" + document.getElementById("birthdateday").value;
-        var fullDay = convertBoolToInt(document.getElementById("fullDay").checked);
-        var data = "id=" + temp[temp.length - 1] +
-          "&mon=" + isDaySelected("mon") + 
-          "&tue=" + isDaySelected("tue") + 
-          "&wed=" + isDaySelected("wed") + 
-          "&thu=" + isDaySelected("thu") + 
-          "&fri=" + isDaySelected("fri") + 
-          "&birthday=" + birthdate + "&fullday=" + fullDay + "&name=" + document.getElementById("studentName").value +
-          "&G1Name=" + document.getElementById("guardian1Name").value + 
-          "&G1EMail=" + document.getElementById("guardian1Email").value + 
-          "&G1Phone=" + document.getElementById("guardian1Number").value + 
-          "&G2Name=" + document.getElementById("guardian2Name").value + 
-          "&G2EMail=" + document.getElementById("guardian2Email").value + 
-          "&G2Phone=" + document.getElementById("guardian2Number").value;
-
-        var callback = reloadIt;
-
-        httpPutAsync(theUrl, data, callback);
       }
 
       function deleteStudent(button){
         if(button.classList.contains("deleteButtonActive")){
-          var temp = window.location.href.split('/');
-          var theUrl = temp[0];
-          for(var i = 1; i < temp.length - 2;++i){
-            theUrl = theUrl + '/' + temp[i];
-          }
-
-          var theUrl = theUrl + '/deletestudent';
-          var data = "id=" + temp[temp.length - 1];
-          var callback = goToAdmin;
-          httpPostAsync(theUrl, data, callback);
+          form = document.getElementById("delete-student-form");
+          form.submit();
         }
 
         else {

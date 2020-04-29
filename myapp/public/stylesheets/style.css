@@ -4,12 +4,13 @@
    elements. */
 :root{
   /* Dark Grays (used in backgrounds,shadows, and text)
-     darkGray1: darkest; darkGray3: lightest */
-  --darkGray1: #2a2a2a;
-  --darkGray2: #2f2f2f;
-  --darkGray3: #3a3a3a; 
-  --darkGray4: #494949;
+     darkGray1: darkest; darkGray4: lightest */
+  --darkGray1: #25272D;
+  --darkGray2: #2F3137;
+  --darkGray3: #3B3D44; 
+  --darkGray4: #474951;
 
+  
   /* Page Theme Colors: */
   --studentsColor: #86AAA7;
   --studentsColorDark: #425452;
@@ -20,7 +21,7 @@
   --tasksColor: #868DAA;
   --tasksColorDark: #4E5263;
 
-  --yellow1: #FFE3AE;
+  --yellow1: #FDE0CA;
   --yellow2: #F9D38B;
   --yellow3: #E0BA71;
   --yellow4: #C29D54;
@@ -38,7 +39,7 @@
   --green4: #6C7E66;
   --green5: #4C5948;
 
-  --blue1: #97B8CA;
+  --blue1: #AFBCD4;
   --blue2: #86A6B8;
   --blue3: #627A87;
   --blue4: #495A64;
@@ -67,24 +68,25 @@
   /* Button Colors */
 
   /* Light Grays (Mostly in text or light backgrounds)
-     lightGray1: lightest; lightGray2: darkest */
+     lightGray1: lightest; lightGray3: darkest */
   --lightGray1: #EEEEEE;
   --lightGray2: #e0e0e0;
   --lightGray3: #B6B6B6;
 
-
-  --headerHoverColor: #48657F;
-  
-  --adminButtonColor: #4B4F7E;
-  --adminButtonHoverColor: #3D4067;
-  
-  --selectedStudentColor: #00A719;
   font-family: 'Roboto Slab', sans-serif;
 
-  --footerNextColor: #48657F;
-  --footerNextHoverColor: #48657F;
+  --mainBGColor: #97C5CD;
+  --contentBGColor: rgb(226, 219, 205);
+  --accentColor1: #05414C;
+  --accentColor1Light: #317582;
+  --accentColor2: #1C734B;
+  --accentColor2Light: #5DB08A;
+  /* CD8C2F */
+  --accentColor3: #BDAD10;
+  --accentColor3Light: #D4B04D;
+  --accentColor4: #992540;
+  --accentColor4Light: #EA7C96;
 
-  --weekdayColor: #4196E3;
 }
 
 ul{
@@ -106,61 +108,190 @@ h1, h2, h3, h4, h5, h6{
   margin-inline-end: 0;
 }
 
-/*IE9*/
-*::selection 
-{
-    background-color:transparent;
-} 
-*::-moz-selection
-{
-    background-color:transparent;
-}
-*
-{        
-    -webkit-user-select: none;
-    -moz-user-select: -moz-none;
-    /*IE10*/
-    -ms-user-select: none;
-    user-select: none;
-
-    /*You just need this if you are only concerned with android and not desktop browsers.*/
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}  
 
 body {
   padding: 0px;
   margin: 0px;
   font-size: 16px;
-  background: var(--blue4);
-  background: linear-gradient(197deg, var(--blue5) 0%, var(--blue5) 54%, var(--blue5) 100%);
-  min-height: 100vh;
+  background: var(--mainBGColor);
+  /*background: linear-gradient(197deg, var(--blue5) 0%, var(--blue5) 54%, var(--blue5) 100%);
+  */min-height: 100vh;
 }
 a{
   cursor: pointer;
+  text-decoration: none;
 }
 
-/* Apply to elements that you want to re-color individually 
-    <p class="lightText red right">Hello</p>
-    The above has light text, red BG, and is oriented right*/
+p{margin: 0;}
+
+
+/* 
+   Global classes that can be used to style elements easily. 
+   Each is named in a way that is hopefully easy to understand and
+   remember. 
+*/
+
+
+/* ----------- LAYOUT CLASSES -----------
+
+   These are classes used to setup layouts for containers 
+   or elements within those containers. 
+*/
+
+/* 
+  This is the main container that is used most often. 
+  Mostly used for the parent element of any elements, like below:
+   
+   <div class="flexContainer">
+      <div>child</div>
+      <div>child</div>
+   </div>
+*/
+.flexContainer{
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+
+.content{
+  padding: 30px;
+}
+
+.mobilePanel ::-webkit-scrollbar {
+  width: 6px;
+}
+
+.mobilePanel ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+.mobilePanel ::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background: var(--lightGray3);
+}
+
+/* Handle on hover */
+.mobilePanel ::-webkit-scrollbar-thumb:hover {
+  filter: brightness(20%);
+}
+
+
+
+
+/* 
+  Contains a content area with a sidebar. EX:
+  <div class="contentWithSidebar">
+    <div class="width70">Content</div>
+    <div class="sidebar">Sidebar</div>
+*/
+.contentWithSidebar{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+.sidebar{
+  align-self: flex-start;
+  min-width: 150px;
+  border-radius: 8px;
+}
+
+
+/* To be used for the title of a content area. EX:
+    <p class="title blue2-BG">This is a title</p>
+
+  Can also be used as a parent element if there are multiple elements
+  in the title section, like in step 2 of the Emailer page. EX:
+
+    <div class="title blue2-BG flex spaceBetween">
+      <p>Title</p>
+      <button>SomeButton</button>
+    </div>
+  
+  The above example creates an element with a text title and a button,
+  formatted so the title is on the left and the button is on the right.
+*/
+.title{
+  font-size: 3em;
+  padding: 30px;
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: var(--lightGray1);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+
+/* */
+
+.icon{
+  font-size: 16px;
+  color: var(--darkGray2);
+}
+
+.hoverable{cursor:pointer;}
+
 .halfWidth{width: 50% !important;}
 .thirdWidth{width: 30% !important;}
 
 /* ----------- WITDH STUFF ----------- */
 .width10{width: 10% !important;}
+.width15{width: 15% !important;}
 .width20{width: 20% !important;}
 .width30{width: 30% !important;}
+.width35{width: 35% !important;}
 .width40{width: 40% !important;}
 .width45{width: 45% !important;}
 .width50{width: 50% !important;}
 .width60{width: 60% !important;}
+.width65{width: 65% !important;}
 .width70{width: 70% !important;}
 .width80{width: 80% !important;}
 .width90{width: 90% !important;}
 .width100{width: 100% !important;}
 
-.customTable .darkText{color: var(--darkGray2) !important;}
+.width200px{width: 200px !important;}
+.width250px{width: 250px !important;}
+.width300px{width: 300px !important;}
+.width350px{width: 350px !important;}
+.width400px{width: 400px !important;}
+.width450px{width: 450px !important;}
+.width500px{width: 500px !important;}
 
-/* ----------- BACKGROUND STUFF ----------- */
+.minWidth250px{min-width: 250px !important;}
+.minWidth300px{min-width: 300px !important;}
+.minWidth350px{min-width: 350px !important;}
+.minWidth400px{min-width: 400px !important;}
+.minWidth450px{min-width: 450px !important;}
+.minWidth500px{min-width: 500px !important;}
+.minWidth600px{min-width: 600px !important;}
+
+.maxWidth250px{max-width: 250px !important;}
+.maxWidth300px{max-width: 300px !important;}
+.maxWidth350px{max-width: 350px !important;}
+.maxWidth400px{max-width: 400px !important;}
+.maxWidth450px{max-width: 450px !important;}
+.maxWidth500px{max-width: 500px !important;}
+.maxWidth550px{max-width: 550px !important;}
+.maxWidth600px{max-width: 600px !important;}
+.maxWidth650px{max-width: 650px !important;}
+
+
+.maxHeight200px{overflow-y: auto; max-height: 200px;}
+.maxHeight250px{overflow-y: auto; max-height: 250px;}
+.maxHeight300px{overflow-y: auto; max-height: 300px;}
+.maxHeight400px{overflow-y: auto; max-height: 400px;}
+.maxHeight500px{overflow-y: auto; max-height: 500px;}
+.maxHeight600px{overflow-y: auto; max-height: 600px;}
+.maxHeight700px{overflow-y: auto; max-height: 700px;}
+.maxHeight800px{overflow-y: auto; max-height: 800px;}
+
+.height100{height: 100% !important;}
+
+/* ----------- BACKGROUNDS ----------- */
 .lightGray1-BG{background: var(--lightGray1);}
 .lightGray2-BG{background: var(--lightGray2);}
 .lightGray3-BG{background: var(--lightGray3);}
@@ -193,32 +324,18 @@ a{
 .yellow4-BG{background: var(--yellow4);}
 .yellow5-BG{background: var(--yellow5);}
 
+.white-BG{background: white;}
 
-.lightGray{ background: var(--lightGray2);}
-.darkGray{background: var(--darkGray2);}
-.green{background: var(--green2);}
-.blue{background: var(--blue1);}
-.red{background: var(--red2);}
-.yellow{background: var(--yellow2);}
-
-.lightText{color: var(--lightGray2)};
-.darkText{color: var(--darkGray2)};
-
-.right{float: right;}
-.left{float: left;}
-
-.lightPadding{padding: 5px !important;}
-.mediumPadding{padding: 10px !important;}
-.heavyPadding{padding: 15px !important;}
-.veryHeavyPadding{padding: 50px !important;}
-
-.insetShadowSmall{box-shadow: inset 0px 0px 2px var(--darkGray2) !important;}
-.insetShadowMedium{box-shadow: inset 0px 0px 6px 1px var(--darkGray2) !important;}
-.insetShadowBig{box-shadow: inset 0px 0px 12px 2px var(--darkGray2) !important;}
-
-.shadowSmall{box-shadow: 0px 0px 2px var(--darkGray2) !important;}
-.shadowMedium{box-shadow: 0px 0px 6px 1px var(--darkGray2) !important;}
-.shadowBig{box-shadow: 0px 0px 12px 2px var(--darkGray2) !important;}
+.main-BG{background: var(--mainBGColor) !important;}
+.content-BG{background: var(--contentBGColor) !important;}
+.accent1-BG{background: var(--accentColor1) !important;}
+.accent1Light-BG{background: var(--accentColor1Light) !important;}
+.accent2-BG{background: var(--accentColor2) !important;}
+.accent2Light-BG{background: var(--accentColor2Light) !important;}
+.accent3-BG{background: var(--accentColor3) !important;}
+.accent3Light-BG{background: var(--accentColor3Light) !important;}
+.accent4-BG{background: var(--accentColor4) !important;}
+.accent4Light-BG{background: var(--accentColor4Light) !important;}
 
 
 /* ----------- BORDER STUFF ----------- */
@@ -229,6 +346,7 @@ a{
 .borderRadiusSmall{border-radius: 4px !important;}
 .borderRadiusMedium{border-radius: 8px !important;}
 .borderRadiusLarge{border-radius: 16px !important;}
+.borderRadiusCircle{border-radius: 50% !important;}
 
 .red1-border{border-color: var(--red1) !important;}
 .red2-border{border-color: var(--red2) !important;}
@@ -262,40 +380,140 @@ a{
 .lightGray2-border{border-color: var(--lightGray2) !important;}
 .lightGray3-border{border-color: var(--lightGray3) !important;}
 
-.smallFont{font-size: 0.8em !important;}
-.mediumFont{font-size: 1.5em !important;}
-.largeFont{font-size: 2em !important;}
 
-.marginTop{margin-top: 40px !important;}
-.marginBottom{margin-bottom: 40px !important;}
-.marginLeft{margin-left: 40px !important;}
-.marginRight{margin-right: 40px !important;}
+/*-------------- SHADOWS -------------------- */
+.insetShadowSmall{box-shadow: inset 0px 0px 2px var(--darkGray2) !important;}
+.insetShadowMedium{box-shadow: inset 0px 0px 6px 1px var(--darkGray2) !important;}
+.insetShadowBig{box-shadow: inset 0px 0px 12px 2px var(--darkGray2) !important;}
 
-.marginTopSmall{margin-top: 6px !important;}
-.marginBottomSmall{margin-bottom: 6px !important;}
-.marginLeftSmall{margin-left: 6px !important;}
-.marginRightSmall{margin-right: 6px !important;}
+.shadowSmall{box-shadow: 0px 0px 2px var(--darkGray2) !important;}
+.shadowMedium{box-shadow: 0px 0px 6px 1px var(--darkGray2) !important;}
+.shadowBig{box-shadow: 0px 0px 12px 2px var(--darkGray2) !important;}
 
 
-
-.displayNone{display: none !important;}
-.relative{position: relative;}
-.absolute{position: absolute;}
-
-.borderBox{box-sizing: border-box !important;}
-
-.flexWrap {flex-wrap: wrap !important;}
-.flexWrapReverse{flex-wrap: wrap-reverse !important;}
-
-.flexContainer{
-  display: flex;
-  padding: 30px;
-  margin: 0;
-}
+/* ------------- MARGINS AND PADDING -------------*/
+.marginBelowChildren10 > * {margin-bottom: 10px !important;}
 
 .noMargin{margin: 0 !important;}
+.center{margin: 0 auto;}
 
-.flex{display: flex;}
+.marginTop10{margin-top: 10px !important;}
+.marginTop20{margin-top: 20px !important;}
+.marginTop30{margin-top: 30px !important;}
+.marginTop40{margin-top: 40px !important;}
+
+.marginBottom10{margin-bottom: 10px !important;}
+.marginBottom20{margin-bottom: 20px !important;}
+.marginBottom30{margin-bottom: 30px !important;}
+.marginBottom40{margin-bottom: 40px !important;}
+
+.marginLeft10{margin-left: 10px !important;}
+.marginLeft20{margin-left: 20px !important;}
+.marginLeft30{margin-left: 30px !important;}
+.marginLeft40{margin-left: 40px !important;}
+
+.marginRight10{margin-right: 10px !important;}
+.marginRight20{margin-right: 20px !important;}
+.marginRight30{margin-right: 30px !important;}
+.marginRight40{margin-right: 40px !important;}
+
+.lightPadding{padding: 5px !important;}
+.mediumPadding{padding: 10px !important;}
+.heavyPadding{padding: 15px !important;}
+.veryHeavyPadding{padding: 50px !important;}
+
+.padding5px10px{padding: 5px 10px;}
+.padding8px15px{padding: 8px 15px;}
+.padding15px30px{padding: 15px 30px;}
+
+.margin10{margin: 10px;}
+.margin15{margin: 15px;}
+.margin20{margin: 20px;}
+.margin25{margin: 25px;}
+.margin30{margin: 30px;}
+.margin35{margin: 35px;}
+.margin40{margin: 40px;}
+
+/* ----------------- TEXT ------------------- */
+.smallFont{font-size: 12px !important;}
+.mediumFont{font-size: 18px !important;}
+.largeFont{font-size: 28px !important;}
+.hugeFont{font-size: 100px !important;}
+
+.font10px{font-size: 10px !important;}
+.font15px{font-size: 15px !important;}
+.font20px{font-size: 20px !important;}
+.font25px{font-size: 25px !important;}
+.font30px{font-size: 30px !important;}
+.font40px{font-size: 40px !important;}
+.font50px{font-size: 50px !important;}
+
+.whiteText{color: white !important;}
+.lightText{color: var(--lightGray2) !important;}
+.darkText{color: var(--darkGray3) !important;}
+.textShadow{text-shadow: 0px 0px 4px var(--darkGray3);}
+
+.lightGray1-text{color: var(--lightGray1);}
+.lightGray2-text{color: var(--lightGray2);}
+.lightGray3-text{color: var(--lightGray3);}
+
+.darkGray1-text{color: var(--darkGray1);}
+.darkGray2-text{color: var(--darkGray2);}
+.darkGray3-text{color: var(--darkGray3);}
+
+.accent1-text{color: var(--accentColor1);}
+.accent1Light-text{color: var(--accentColor1Light);}
+.accent2-text{color: var(--accentColor2);}
+.accent2Light-text{color: var(--accentColor2Light)}
+.accent3-text{color: var(--accentColor3);}
+.accent3Light-text{color: var(--accentColor3Light);}
+.accent4-text{color: var(--accentColor4);}
+.accent4Light-text{color: var(--accentColor4Light);}
+
+.right{float: right;}
+.left{float: left;}
+
+.centerText{text-align: center !important;}
+.rightText{text-align: right !important;}
+.leftText{text-align: left !important;}
+
+
+/* ------------ DISPLAYS ------------- */
+.displayNone{display: none !important;}
+.inlineBlock{display: inline-block;}
+.borderBox{box-sizing: border-box !important;}
+.hideOverflow{overflow: hidden !important;}
+
+/* ------------ POSITIONING ------------- */
+.relative{position: relative;}
+.absolute{position: absolute;}
+.absoluteRight{right: 10px;}
+.top0px{top: 0px;}
+.top5px{top: 5px;}
+.top10px{top: 10px;}
+.top15px{top: 15px;}
+.top20px{top: 20px;}
+.top25px{top: 25px;}
+
+/* ------------- FLEX STUFF ------------ */
+.flexWrap {flex-wrap: wrap !important;}
+.flexWrapReverse{flex-wrap: wrap-reverse !important;}
+.flexListColumn{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.flexListColumn li{
+  align-items: center;
+  width: 100%;
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.flex{display: flex !important;}
 .flexColumn{flex-direction: column;}
 .flexStretch{justify-content: stretch; align-items: stretch;}
 
@@ -308,26 +526,187 @@ a{
 .flexCenterItems{justify-items: center !important;}
 
 .flexAlignCenter{align-content: center !important; align-items: center !important;}
-
+.flexAlignStart{align-content: flex-start !important; align-items: flex-start !important;}
 .flexLeft{justify-content: flex-start !important;}
 .flexRight{justify-content: flex-end !important;}
 .spaceBetween{justify-content: space-between !important;}
 .spaceAround{
   justify-content: space-around !important;
-  align-content: center !important;
+  justify-items: space-around !important;
 }
+.spaceEvenly{justify-content: space-evenly !important;}
+
+.flexGrow1{flex-grow: 1;}
+
+/* ------- SELECTABLE LIST ----------- 
+  Example use: the weekday selection in new student form and on profile */
+.selectableList{
+  display: flex;
+  flex-direction: row;
+}
+
+/* Add margin between list elements */
+.selectableList li{
+  background: var(--lightGray3);
+  cursor: pointer;
+  padding: 10px;
+  text-align: center;
+  margin: 5px;
+  min-width: 2em;
+  align-self: center;
+}
+
+
+.selectableList .selectedElement{
+  box-shadow: inset 0px 0px 6px var(--darkGray1);
+  background: var(--accentColor2Light);
+  color: var(--lightGray1);
+}
+
+
+.customTable .darkText{color: var(--darkGray2) !important;}
 
 .ui-selectmenu-button.ui-button{
   width: 10vw !important;
 }
 
+.blankInput{
+  background: none !important;
+  background-color: transparent !important;
+}
+
+.circleButton{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  text-align: center;
+  width: 45px;
+  height: 45px;
+}
+
+.circleButton:hover{
+  
+}
+
+/* An element that can be clicked and will be "toggled"
+<div>
+  <a class="toggleable toggled" onclick="toggleableToggled(this)">Link</a>
+  <a class="toggleable" onclick="toggleableToggled(this)">Link2</a>
+</div> */
+.toggleable{
+  padding: 15px 0px;
+  text-align: center;
+  align-self: center;
+  justify-self: center;
+  border: 1px solid var(--lightGray3);
+  color: var(--lightGray3);
+  flex-grow: 1;
+}
+
+.toggled{
+  background: var(--accentColor2Light);
+  color: var(--lightGray1);
+  border: 1px solid var(--accentColor2Light);
+}
+
+/* 
+<div class="inputWithIcon">
+  <i></i>
+  <input></input>
+</div>*/
+.inputWithIcon{
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--lightGray2);
+}
+
+.inputWithIcon input:focus i::after{
+  color: var(--accentColor1Light);
+}
+
+.inputWithIcon:focus-within{
+  border: 1px solid var(--accentColor2Light) !important;
+}
+
+.inputWithIcon:focus-within i::after{
+  border-right: 1px solid var(--accentColor2Light) !important;
+}
+
+.inputWithIcon input{
+  background: none;
+  font-size: 1.2em;
+  border: none;
+  box-shadow: none;
+}
+
+.inputWithIcon i{
+  width: 50px;
+  text-align: center;
+  align-self: center;
+  font-size: 1em;
+  color: var(--lightGray3);
+}
+
+.inputWithIcon i::after{
+  content: "";
+  position: relative;
+  right: -30%;
+  border-right: 1px solid var(--lightGray2);
+  align-self: center;
+}
+
+/*
+<div class="buttonWithIcon" onclick"">
+  <i></i> // order of these two doesn't matter
+  <p></p> // add class "textRight" to <p> if it's second
+</div>*/
+.buttonWithIcon{
+  cursor: pointer;
+  display: flex;
+  min-width: 150px;
+  justify-content: space-between;
+  align-content: center;
+  align-items: center;
+  background: var(--accentColor1Light);
+  overflow: hidden;
+  box-shadow: 0px 2px 2px var(--darkGray3);
+}
+
+.buttonWithIcon i{
+  width: 15%;
+  padding: 14px 10px;
+  text-align: center;
+  align-self: center;
+  background: rgba(0,0,0,0.2);
+  color: var(--lightGray1);
+}
+
+.buttonWithIcon p{
+  color: var(--lightGray2);
+  margin: 0;
+  flex-grow: 1;
+  text-align: center;
+}
+
+.buttonWithIcon:hover{
+  filter: brightness(90%);
+}
+
+.buttonWithIcon:hover p, i {filter: brightness(110%);}
+
+.buttonWithIcon:active{
+  box-shadow: 0px 1px 1px var(--darkGray2);}
+
 /* Use this for any buttons */
 .customButton{
   padding: 8px 25px;
-  background-color: var(--adminButtonColor);
+  outline: none;
+  border: none;
   border-radius: 15px;
   margin-right: 10px;
   color: var(--lightGray1);
+  font-size: 1.2em;
 }
 
 .customButton:hover{
@@ -365,17 +744,19 @@ a{
 /* Container for home page buttons */
 .buttonAreaGrid{
   padding: 50px;
+  width: 1000px;
   margin: 0 auto;
-  width: 70%;
   list-style-type: none;
-  display: block;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   text-align: center;
 }
 
 .buttonAreaGrid li{
   border-radius: 20px;
-  width: 28vw;
-  height: 28vw;
+  width: 300px;
+  height: 300px;
   margin: 10px;
   display: inline-block;
 }
@@ -389,12 +770,63 @@ a{
   display:flex;/*CSS3*/
   align-items:center;/*Vertical align*/
   justify-content:center;/*horizontal align*/
-  font-size: 4vw;
+  font-size: 45px;
 }
 
+.logout{
+  position: absolute;
+  right: 10px;
+  top: 22px;
+}
 
+.logout i{
+  text-align: right;
+  margin: auto 0;
+}
+
+.resetButton{
+  background: none;
+  outline: none;
+  border: none;
+}
+
+.hiddenMobile{display: none !important;}
 /* Mobile friendly stuff */
 @media screen and (max-width: 1200px) {
+  .font10px{font-size: 20px !important;}
+  .font15px{font-size: 28px !important;}
+  .font20px{font-size: 35px !important;}
+  .font25px{font-size: 45px !important;}
+  .font30px{font-size: 50px !important;}
+  .font40px{font-size: 70px !important;}
+  .font50px{font-size: 80px !important;}
+
+
+  .inputWithIcon i{ font-size: 1.5em; width: 60px;}
+  .mobilePanel{width: 100% !important; align-self: center;}
+  .hiddenMobile{display: inherit !important;}
+  .logout{display: none;}
+
+  .width100Mobile{width: 100% !important; margin-bottom: 10px;}
+  .width90Mobile{width:90% !important; margin-bottom: 10px;}
+  .flexContainer{ flex-direction: column;}
+  .flexCollapseMobile{flex-direction: column !important; align-items: center !important; justify-content: center !important;}
+  .flexCollapseMobile > * {margin-bottom: 10px;}
+  .centerFlexMobile{justify-content: center !important; align-items: center !important;}
+
+  .smallFont{font-size: 1em !important;}
+  .mediumFont{font-size: 1.8em !important;}
+  .largeFont{font-size: 2.5em !important;}
+
+  .selectableList li{
+    font-size: 24px;
+    min-width: 48px;
+  }
+
+  .toggleable{font-size: 40px; padding: 1em 0px;}
+
+  .contentWithSidebar{flex-direction: column-reverse; align-items: center;}
+  .sidebar{width: 100% !important;}
 
   .buttonAreaGrid{
     width: 80%;
@@ -416,7 +848,7 @@ a{
   input{
     padding-top: 15px !important;
     padding-bottom: 15px !important;
-    font-size: 2.5em !important;
+    font-size: 2em !important;
   }
 
   textarea{
@@ -434,18 +866,20 @@ a{
     margin-bottom: 20px;
   }
 }
-
+/* END MOBILE FRIENDLY STUFF */
 
 
 input{
-  border-radius: 8px;
   border-style: none;
   outline: none;
   padding: 10px 15px 10px 15px;
-  font-size: 1.2em;
+  font-size: 1em;
   -webkit-user-select: text;
   width: 100%;
-  box-sizing: border-box;
+  box-sizing: border-box !important;
+  border: none;
+  box-shadow: none;
+  color: var(--darkGray3);
 }
 
 input::selection{
@@ -456,16 +890,23 @@ input:focus{
   box-shadow: inset 0px 0px 4px var(--selectedStudentColor);
 }
 
+/* Remove autofill styling on Chrome for input/select/textfields */
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px var(--lightGray1) inset !important;
+    /*use inset box-shadow to cover background-color*/
+    -webkit-text-fill-color: var(--darkGray2) !important;
+    /*use text fill color to cover font color*/
+}
+
 textarea{
   border-style: none;
   outline: none;
   font-size: 1.2em;
   box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  width: 100%;
+  border: 1px solid var(--lightGray2);
   padding: 10px 15px;
-  box-shadow: inset 0px 0px 3px 0px var(--darkGray2);
-  border-radius: 10px;
   max-width: 100%;
   min-height: 3em;
   resize: none;
@@ -523,9 +964,10 @@ textarea:focus{
 /* Navigation styling */
 #navigation {
   display: flex;
-  top: 0;
+  top: 0px;
   width: 100%;
-  margin-bottom: 100px;
+  margin-bottom: 25px;
+  z-index: 9999;
 }
 
 .section {
@@ -533,7 +975,6 @@ textarea:focus{
 }
 
 #form {
-  color:rgb(0, 0, 0);
   padding-top: 8px;
   padding-bottom: 4px;
   padding-left: 5px;
@@ -563,10 +1004,23 @@ h1{
 
 svg {
   background-color: rgba(255, 255, 255, 0.9);
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
+canvas {
+  background-color: rgba(255, 255, 255, 0.9);
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
 
-/* heat map  */
+.lab {
+  margin-top: 1em;
+}
+
+/* heat map  
 rect.bordered {
   stroke: #E6E6E6;
   stroke-width:2px;   
@@ -584,16 +1038,16 @@ text.axis-workweek {
 
 text.axis-worktime {
   fill: #000;
-} 
+} */
 
 /* Navigation styling */
 #navigation {
   display: flex;
-  position: relative;
-  width: 100%;
-  margin-bottom: 10px;
   position: -webkit-sticky; /* Safari */
   position: sticky;
+  width: 100%;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
 #navigationPie{
@@ -614,4 +1068,20 @@ li {
   padding-bottom: 4px;
   padding-left: 5px;
   padding-right: 5px;
+}
+
+/* Input field with no background and just a bottom border */
+
+.lineInput{
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--darkGray3);
+  color: var(--darkGray3) !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.lineInput:focus{
+  box-shadow: none !important;
+  border-color: var(--green1);
 }

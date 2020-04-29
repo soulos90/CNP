@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var request = require('request-promise');
+const auth = require('../public/javascripts/loginScripts');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', auth.checkAuthenticated, function(req, res, next) {
   var activity_query = "CALL PullUnhiddenActivities";
   /* Students of current day */
   var student_query = "CALL PullUnhiddenStudents();";
@@ -15,13 +16,13 @@ router.get('/', function(req, res, next) {
     if (err) throw err;
     con.query(activity_query, function (err, aQuery) {
       if (err) throw err;
-      res.render('students.ejs', {title: 'Student Page', students: sQuery[0],  activities: aQuery[0]});
+      res.render('tracker.ejs', {title: 'Student Page', students: sQuery[0],  activities: aQuery[0]});
     })
   })
   
 });
 
-router.post('/addstudentActivity', function(req, res){
+router.post('/addstudentActivity', auth.checkAuthenticated, function(req, res){
   stus = req.body.stu.split(",");
 
   var sql = "SELECT dateTimes FROM Weather WHERE weatherID = (SELECT MAX(weatherID) FROM Weather);";
@@ -69,4 +70,35 @@ function parseWeather(data,con){
   con.query(sql, function (err, result) {
   });
 }
+
+router.post('/add-potty-break', auth.checkAuthenticated, function (req, res) {
+  var students = req.body.students.split(",");
+  for (var i = 0; i < students.length; i++) {
+    var push_potty_query = `CALL InsertBathroomBreak(${students[i]});`;
+    (function (query) {
+      console.log(push_potty_query);
+      con.query(query, function (err) {
+        if (err) {
+          console.log(err);
+        }
+      });
+    })(push_potty_query); //closure necesssary for async
+  }
+
+  if (req.body.accidentFlag == 'true') {
+    for (var i = 0; i < students.length; i++) {
+      var increase_accident_query = `CALL InsertAccidentNumber(${students[i]});`;
+      (function (query) {
+        console.log(increase_accident_query);
+        con.query(query, function (err) {
+          if (err) {
+            console.log(err);
+          }
+        });
+      })(increase_accident_query); //closure necesssary for async
+    }
+  }
+  res.end();
+});
+
 module.exports = router;
