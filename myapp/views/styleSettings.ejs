@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include headerlinks.ejs %>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab&display=swap" rel="stylesheet">
+    <script src="/javascripts/post.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/javascripts/utilityScripts.js"></script>
+
+  </head>
+  <body>
+    <div class="page-with-side-menu">
+      <div onclick="$(this).toggleClass('active'); toggleBodyOverflow();" class="side-header-mobile-burger">
+        <i class="fa fa-bars"></i>
+      </div>
+      <div id="sideHeader" class="side-header-wrapper">
+        <div class="side-header">
+          <div class="side-header-top width100">
+            <a class="side-header-link" href="/">Home</a>
+            <a class="side-header-link" href="/tracker">Tracker</a>
+            <a class="side-header-link" href="/reports">Reports</a>
+            <a class="side-header-link" href="/admin">Admin</a>
+            <a class="side-header-link" href="/stats">Stats</a>
+            <a class="side-header-link" href="/emailer">Email</a>
+            <a class="side-header-link" href="/tasks">Tasks</a>
+            <a class="side-header-link active" href="/styleSettings">App Style</a>
+          </div>
+
+          <div class="side-header-bottom">
+            <form action="/logout?_method=DELETE" method="POST">
+              <button class="side-header-link resetButton width100 leftText noBorder" href="/logout?_method=DELETE" type="submit"><i class="rotate180 fas fa-sign-out-alt marginRight10"></i> Logout</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+
+      <div class="content-with-side-header noPadding">
+        <!-- Save/Reset buttons -->
+        <div class="width100 dark-content-BG flex flexRight centerFlexMobile width90Mobile center">
+          <div class="flex flexCenter flexWrap">
+            <a onclick="httpPostAsync(window.location.href+'/reset-to-defaults', '', reloadIt);" class="light-text margin10 hoverable padding10px30px theme-color4-light-BG">Reset to Defaults</a>
+            <a onclick="saveData();" class="padding10px30px theme-color1-light-BG light-text hoverable margin10">Save</a>
+          </div>
+        </div>
+        <div class="flex flexWrap spaceBetween padding30px">
+          <!-- ----- Theme Colors Panel ----- -->
+          <div class="mobilePanel light-content-BG flexGrow1 margin10 borderRadiusSmall hideOverflow minWidth450px width450px">
+            <h2 class="width100 dark-content-BG padding10px light-text">Theme Colors</h2>
+            <div class="heavyPadding">
+              <% themeColors.forEach((variable, index) => {  %>
+                <div class="flex spaceBetween flexAlignCenter padding5px">
+                  <p><%= variable.Name %></p>
+                  <div class="flex flexRight width40 flexAlignCenter">
+                    <input maxlength="7" id="<%= variable.Name %>-value" value="<%= variable.Value %>" onkeyup="updateColor(this, '<%= variable.Name %>');" />
+                    <div id="<%= variable.Name %>-colorbox" class="color-box" style="background:<%= variable.Value %>" ></div>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+          </div>
+
+          <div class="flex flexColumn flexAlignCenter flexGrow1 minWidth450px width450px">
+            <!-- ----- Text Colors Panel ----- -->
+            <div class="mobilePanel light-content-BG marginBottom10 marginTop10 borderRadiusSmall hideOverflow width450px">
+              <h2 class="width100 dark-content-BG padding10px light-text">Text Colors</h2>
+              <div class="heavyPadding">
+                <% textColors.forEach((variable, index) => {  %>
+                  <div class="flex spaceBetween flexAlignCenter">
+                    <p><%= variable.Name %></p>
+                    <div class="flex flexRight width40 flexAlignCenter">
+                      <input id="<%= variable.Name %>-value" value="<%= variable.Value %>" onkeyup="updateColor(this, '<%= variable.Name %>');" />
+                      <div id="<%= variable.Name %>-colorbox" class="color-box" style="background:<%= variable.Value %>"></div>
+                    </div>
+                  </div>
+                <% }) %>
+              </div>
+            </div>
+
+            <!-- ----- Content Colors Panel ----- -->
+            <div class="mobilePanel light-content-BG marginBottom10 marginTop10 borderRadiusSmall hideOverflow width450px">
+              <h2 class="width100 dark-content-BG padding10px light-text">Content Colors</h2>
+              <div class="heavyPadding">
+                <% contentColors.forEach((variable, index) => {  %>
+                  <div class="flex spaceBetween flexAlignCenter">
+                    <p><%= variable.Name %></p>
+                    <div class="flex flexRight width40 flexAlignCenter">
+                      <input id="<%= variable.Name %>-value" value="<%= variable.Value %>" />
+                      <div id="<%= variable.Name %>-colorbox" class="color-box" style="background:<%= variable.Value %>"></div>
+                    </div>
+                  </div>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+          
+
+          <!-- ----- Other Variables Panel ----- -->
+          <div class="mobilePanel light-content-BG flexGrow1 margin10 borderRadiusSmall hideOverflow minWidth450px width450px">
+            <h2 class="width100 dark-content-BG padding10px light-text">Other Variables</h2>
+            <div class="heavyPadding">
+              <% otherVariables.forEach((variable, index) => {  %>
+                <div class="flex spaceBetween flexAlignCenter">
+                  <p><%= variable.Name %></p>
+                  <div class="flex flexRight width40 flexAlignCenter">
+                    <input id="<%= variable.Name %>-value" value="<%= variable.Value %>" onkeyup="updateColor(this, '<%= variable.Name %>');" />
+                    <% if (variable.Value.indexOf('#') > -1) { %>
+                      <div id="<%= variable.Name %>-colorbox" class="color-box" style="background:<%= variable.Value %>"></div>
+                    <% } %>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+        
+      </div> <!-- End Settings panels -->
+    </div> <!-- End side-content wrapper div -->
+    <script>
+      function saveData(){
+        var vals = <%- JSON.stringify(themeColors) %>;
+        vals = vals.concat(<%- JSON.stringify(textColors) %>);
+        vals = vals.concat(<%- JSON.stringify(contentColors) %>);
+        vals = vals.concat(<%- JSON.stringify(otherVariables) %>);
+        var data = "";
+        var toPost = false;
+        for(var i = 0; i < vals.length; i++){
+          data += `&varName=` + vals[i].Name + '&varVal=' + document.getElementById(vals[i].Name + "-value").value;
+          if(i === vals.length - 1){
+            toPost = true;
+          }
+        }
+        if(toPost){
+          httpPostAsync(window.location.href+"/write", data, reloadIt);
+        }
+      }
+
+      function updateColor(element, varName){
+        console.log(element);
+        console.log(varName);
+        element.parentElement.querySelector("#" + varName + "-colorbox").style.backgroundColor = element.value;
+      }
+    </script>
+  </body>
+</html>

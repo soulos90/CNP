@@ -20,6 +20,7 @@ function theLine(id, data) {
     }
   });
   
+  //create a new line chart
   var chart = new Chart(document.getElementById("canvas" + id), {
     type: 'line',
     data: {
@@ -33,11 +34,12 @@ function theLine(id, data) {
       }
     }
   });
-  chart.myId = id;
+  chart.myId = id + "canvasCol";
   chart.className = "canvasObj";
   return chart;
 }
 
+//generates a random color for each line
 function getRandomColor() {
   var letters = '0123456789ABCDEF';
   var color = '#';
@@ -47,71 +49,98 @@ function getRandomColor() {
   return color;
 }
 
+//generates the line
 function generateLine(id) {
   var parent = document.getElementById("charts");
-  var newdiv = document.createElement("div");newdiv.id = id;
-  var bottom = document.getElementById("newchart");
-  
-  var temp,temp2;
+  var container = document.createElement("div"); container.id = id; container.className = "light-content-BG width100 margin10 center flexGrow1 borderRadiusSmall minWidth400px width100Mobile";
+
+  var twoColContainer = document.createElement("div");
+  twoColContainer.classList = "flex flexCollapseMobile spaceBetween heavyPadding";
+
+  var chartColumn = document.createElement('div'); chartColumn.id = id + "canvasCol";
+  chartColumn.classList = "width100";
+
+  var optionsColumn = document.createElement('div');
+  optionsColumn.classList = "width20 left width100Mobile flex flexColumn flexAlignCenter marginBelowChildren10";
+
+
+  var temp;
 
   //Start and End Date
-  {
-    temp = document.createElement("label"); temp.innerHTML = "Beginning Date ";
-    newdiv.appendChild(temp);
+  { 
+    temp = document.createElement("title"); temp.className = "width100 dark-content-light-BG flex spaceBetween flexAlignCenter marginLeft light-text font25px";
 
-    temp = document.createElement("select");temp.id = "syear"+id; temp.class="lab"; temp.className="lab"; temp.onchange = function(){sgenDays(id); updateData(id);};
-    newdiv.appendChild(temp);
+    var title = document.createElement('h2'); title.innerHTML = "Line Chart"; title.classList = "light-text heavyPadding";
 
-    temp = document.createElement("select");temp.id="smonth" + id; temp.class="pretty-classic"; temp.onchange = function(){sgenDays(id); updateData(id);};
-    newdiv.appendChild(makeMonthS(temp));
+    temp.appendChild(title);
+    var del = document.createElement("a"); del.id = "button"; del.className="marginRight10 padding10px light-text theme-color4-BG hoverable font25px"; del.onclick = function(){deleteChart(id);}; del.innerHTML = "X";
+    temp.appendChild(del);
+    container.appendChild(temp);
 
-    temp = document.createElement("select");temp.id="sday" + id; temp.class="startD"; temp.className="startD"; temp.onchange = function(){updateData(id);};
-    newdiv.appendChild(temp);
+    // Beginning date select
+    temp = document.createElement("label"); temp.innerHTML = "Beginning Date "; temp.classList = "label width90 center marginBottom10";
+    optionsColumn.appendChild(temp);
 
-    temp = document.createElement("label");temp.innerHTML = " End Date ";
-    newdiv.appendChild(temp);
+    var selectDiv = document.createElement('div'); selectDiv.classList = "flex-column";
+    temp = document.createElement("select"); temp.id = "syear" + id; temp.className = "width100 arrow-down"; temp.onchange = function(){sgenDays(id); updateData(id);};
+    selectDiv.appendChild(temp);
 
-    temp = document.createElement("select");temp.id="eyear" + id;temp.class="pretty-classic";temp.onchange = function(){egenDays(id); updateData(id);};
-    newdiv.appendChild(temp);
+    temp = document.createElement("select"); temp.id = "smonth" + id; temp.className = "width100 arrow-down"; temp.onchange = function(){sgenDays(id); updateData(id);};
+    selectDiv.appendChild(makeMonthS(temp));
 
-    temp = document.createElement("select");temp.id="emonth" + id;temp.class="pretty-classic";temp.onchange = function(){egenDays(id); updateData(id);};
-    newdiv.appendChild(makeMonthS(temp));
+    temp = document.createElement("select"); temp.id = "sday" + id; temp.className = "width100 arrow-down"; temp.onchange = function(){updateData(id);};
+    selectDiv.appendChild(temp);
+    optionsColumn.appendChild(selectDiv);
 
-    temp = document.createElement("select");temp.id="eday" + id;temp.class="pretty-classic";temp.onchange = function(){updateData(id);};
-    newdiv.appendChild(temp);
 
+    // end date select
+    temp = document.createElement("label"); temp.innerHTML = "End Date"; temp.className = "label width90 center marginBottom10";
+    optionsColumn.appendChild(temp);
+
+    selectDiv = document.createElement('div'); selectDiv.classList = "flex-column";
+    temp = document.createElement("select"); temp.id = "eyear" + id; temp.className="width100 arrow-down"; temp.onchange = function(){egenDays(id); updateData(id);};
+    selectDiv.appendChild(temp);
+
+    temp = document.createElement("select"); temp.id = "emonth" + id; temp.className="width100 arrow-down"; temp.onchange = function(){egenDays(id); updateData(id);};
+    selectDiv.appendChild(makeMonthS(temp));
+
+    temp = document.createElement("select"); temp.id = "eday" + id; temp.className="width100 arrow-down"; temp.onchange = function(){updateData(id);};
+    selectDiv.appendChild(temp);
+    optionsColumn.appendChild(selectDiv);
   }
 
-  //The Spin thing
-  temp = document.createElement("input");temp.id="section" + id; temp.class="spinny"; temp.className = "spinny"; temp.type = "NUMBER";temp.min = "2";temp.max = "100";temp.step = "1";temp.value= "10";temp.onchange = function(){updateData(id);};
-  newdiv.appendChild(temp);
-
-  //Delete button
-  temp = document.createElement("button");temp.id="button";temp.class="deleteB";temp.className="deleteB";temp.onclick = function(){deleteChart(id);};temp.innerHTML = "X";
-  newdiv.appendChild(temp);
+  //The spin thing
+  //temp = document.createElement("label");temp.innerHTML = "Chart segments";temp.className = "label";
+  //newdiv.appendChild(temp);
+  temp = document.createElement("input");temp.id="section" + id; temp.class="spinny"; temp.className = "spinny"; temp.type = "NUMBER"; temp.min = "2"; temp.max = "100"; temp.step = "1"; temp.value= "10"; temp.onchange = function(){updateData(id);};
+  temp.style = "display: none; visibility:hidden;"
+  optionsColumn.appendChild(temp);
 
   //First Drop Down Option
-  temp = document.createElement("select");temp.id="option1" + id;temp.class="newLine";temp.className="newLine";temp.onchange = function(){onUpdateop1(id);};
+  temp = document.createElement("select");temp.id="option1" + id;temp.class="newLine";temp.className="newLine arrow-down";temp.onchange = function(){onUpdateop1(id);};
   {
-    temp2 = document.createElement("option");temp2.value = "01";temp2.innerHTML = "Students";
+    temp2 = document.createElement("option"); temp2.value = "01"; temp2.innerHTML = "Students";
     temp.appendChild(temp2);
 
     temp2 = document.createElement("option");temp2.value = "02";temp2.innerHTML = "Activities";
     temp.appendChild(temp2);
   }
-  newdiv.appendChild(temp);
+  optionsColumn.appendChild(temp);
 
   //Second Drop Down (I think)
-  temp = document.createElement("div");temp.id = "opid1" + id;
-  newdiv.appendChild(temp);
+  temp = document.createElement("div");temp.id = "opid1" + id;temp.class="secondOption arrow-down";
+  optionsColumn.appendChild(temp);
 
-  temp = document.createElement("div");temp.id = "op2" + id;temp.class="secondOption";temp.className = "secondOption";
-  newdiv.appendChild(temp);
+  temp = document.createElement("div");temp.id = "op2" + id;temp.class="secondOption arrow-down";
+  optionsColumn.appendChild(temp);
 
   temp = document.createElement("canvas");temp.id = "canvas" + id;temp.className = "canvasObj";
-  newdiv.appendChild(temp);
+  chartColumn.appendChild(temp);
+  twoColContainer.appendChild(optionsColumn);
+  twoColContainer.appendChild(chartColumn);
+  container.appendChild(twoColContainer);
 
-  parent.insertBefore(newdiv,bottom);
+  parent.appendChild(container);
   onUpdateop1(id);
 
   function onUpdateop1(id) {
@@ -136,7 +165,7 @@ function generateLine(id) {
       document.getElementById("option2" + id).remove();
     }
 
-    temp = document.createElement("select");temp.id="option2" + id;temp.class="pretty-classic";temp.onchange = function(){updateData(id);};
+    temp = document.createElement("select");temp.id="option2" + id;temp.className="arrow-down";temp.onchange = function(){updateData(id);};
     if(op1.value == "01" && opid1.value != "all")
     {
       temp2 = document.createElement("option");temp2.value = "01";temp2.innerHTML = "Activities";
@@ -172,10 +201,10 @@ function generateLine(id) {
     if(newdiv.hasChildNodes()){
       document.getElementById("optionid1" + id).remove();
     }
-    temp = document.createElement("select");temp.id="optionid1" + id;temp.class="pretty-classic";temp.onchange = function(){updateOp2(id);updateData(id);};
+    temp = document.createElement("select");temp.id="optionid1" + id; temp.className="arrow-down";temp.onchange = function(){updateOp2(id);updateData(id);};
     if(op1.value == "01")
     {
-      temp2 = document.createElement("option");temp2.value = "all";temp2.innerHTML = "All Students";
+      temp2 = document.createElement("option");temp2.value = "all"; temp2.innerHTML = "All Students";
       temp.appendChild(temp2);
 
       studentList.forEach((element)=>{

@@ -1,25 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<body>
-    <h1>CNP Daily Email</h1>
-    <h2>Summary</h2>
-        <%- summary %>
-    <h2>Snack</h2>
-        <%- snack %>
-    <h2>Lunch</h2>
-        <%- lunch %>
+<head>
+    <style>
 
-    <h2>PERSONALIZED SECTION</h2>
-    <h3>Behaviors:</h3>
-    <!-- behavior title 1: all/none - note -->
-    <p style="padding: 10px 20px; background: #DDD; color: white; width: 100%;">Behaviors</p>
-    <ul style="outline: none; list-style-type: none; display: flex; flex-wrap: wrap; justify-content; space-between;">
-        <li style="display: flex; justify-content: space-between;">
-            <p>Behavior 1</p>
-            <p>Value</p>
-        </li>
-    </ul>
-    <h3>PERSONALIZED NOTE</h3>
-</body>
+        .email-template-container body, div, span, applet, object, iframe,
+        h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+        a, abbr, acronym, address, big, cite, code,
+        del, dfn, em, img, ins, kbd, q, s, samp,
+        small, strike, strong, sub, sup, tt, var,
+        b, u, i, center,
+        dl, dt, dd, ol, ul, li,
+        fieldset, form, label, legend,
+        table, caption, tbody, tfoot, thead, tr, th, td,
+        article, aside, canvas, details, embed, 
+        figure, figcaption, footer, header, hgroup, 
+        menu, nav, output, ruby, section, summary,
+        time, mark, audio, video {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font: inherit;
+            vertical-align: baseline;
+        }
+        /* HTML5 display-role reset for older browsers */
+        .email-template-container article, aside, details, figcaption, figure, 
+        footer, header, hgroup, menu, nav, section {
+            display: block;
+        }
+        .email-template-container body {
+            line-height: 1;
+        }
+        .email-template-container ol, ul {
+            list-style: none;
+        }
+        .email-template-container blockquote, q {
+            quotes: none;
+        }
+        .email-template-container blockquote:before, blockquote:after,
+        q:before, q:after {
+            content: '';
+            content: none;
+        }
+        .email-template-container table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            border: none;
+        }
+
+        .email-template-container{
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .email-template-container h1, h2, h3, h4, h5, h6{
+            margin-block-start: 0px !important;
+            margin-block-end: 0px !important;
+            margin-inline-start: 0px !important;
+            margin-inline-end: 0px !important;
+            font-weight: 300 !important;
+            margin: 0px !important;
+        }
+
+        .email-template-container p{margin: 0px !important; padding: 0px !important; font-size: 14px !important; line-height: 1.3em;}
+
+        .section{
+            padding: 20px 30px;
+            margin: 0;
+        }
+
+        .value-section{
+            margin-bottom: 10px;
+            padding: 15px;
+            background: #F9F9F9;
+            border-left: 4px solid #5DB08A;
+        }
+
+        .value-section h2{font-size: 1.5em; margin-bottom: 10px;}
+
+        .value-section p{
+            line-height: 1.2em;
+        }
+
+        .value-section h4{font-size: 1em; font-weight: 300;}
+
+        .email-template-container .section h2{ margin-bottom: 20px; }
+        .width90{width: 90% !important;}
+        .width100{width: 100% !important;}
+
+        .note{font-style: italic; color:#5DB08A; text-align: right; }
+
+        .bg-green{background: #5DB08A;}
+        .bg-green-dark{background: #1C734B;}
+        .bg-blue{background: #317582;}
+        .bg-blue-dark{background: #05414C;}
+        .bg-gray-dark{background: #333;}
+        .bg-gray{background: #EEE;}
+
+        .text-white{color: white;}
+        .text-dark{color: #333;}
+        
+        .behavior-value{text-align: right; color: #222;}
+        .behavior-title{text-align: left; font-size: 1.1em; padding-right: 40px !important;}
+        @media screen and (max-width: 1200px){
+            .email-template-container p{font-size: 16px !important;}
+            .email-template-container h2, h3{ font-size: 30px !important; }
+            .behavior-title{ margin-bottom: 5px;}
+            .value-section h4{font-size: 1.3em;}
+        }
+
+        .reminders-section{border-left: 4px solid #9e1414;}
+
+        .margin-top-40px{margin-top: 40px;}
+        .margin-bottom-20px{margin-bottom: 20px;}
+        .margin-bottom-40px{margin-bottom: 40px;}
+        .no-margin{margin: 0 !important;}
+        .padding50px0px{padding: 50px 0px;}
+        .padding25px0px{padding: 25px 0px;}
+        
+        .padding10px30px{padding: 10px 30px;}
+        .center-text{text-align: center;}
+        .right-text{text-align: right;}
+        .font-40px{font-size: 2.7em;}
+        .font-30px{font-size: 30px;}
+        .font-26px{font-size: 1.8em;}
+        .font-22px{font-size: 22px;}
+        .font-16px{font-size: 1.1em;}
+    </style>
+</head>
+<div class="email-template-container">
+    <div class="section bg-gray margin-bottom-40px">
+        <%- header %>
+        <div class="margin-bottom-20px">
+            <%- summary %>
+        </div>
+        <div class="value-section">
+            <table class="width100">
+                <tr>
+                    <td class="behavior-title">Today's Snack</td>
+                    <td class="behavior-value"><%- snack %></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="value-section">
+            <table class="width100">
+                <tr>
+                    <td class="behavior-title">Today's Lunch</td>
+                    <td class="behavior-value"><%- lunch %></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Behaviors and Activities -->
+    <div class="section bg-gray margin-bottom-40px">
+        <div class="margin-bottom-20px">
+            <h2 class="center-text font-22px"><%= name.split(" ")[0] %>'s Day at CNP</h2>
+        </div>
+        <% behaviors.forEach((behavior, index) => { %>
+            <div class="value-section">
+                <table class="width100">
+                    <tr>
+                        <td class="behavior-title"><%= behavior.name %></td>
+                        <td class="behavior-value"><% if(behavior.selection == null || behavior.selection.length == 0) { %>
+                            N/A
+                            <% } else { %>
+                                <%= behavior.selection %>
+                            <% } %></td>
+                    </tr>
+                </table>
+                
+                <% if(behavior.note.length > 0) { %>
+                    <p class="note"><%= behavior.note %></p>
+                <% } %>
+            </div>
+            <% }) %>
+
+            <% var actList = []; activities.forEach((activity, index) => {if(activity.Helper != 1){actList.push(activity);}}) %>
+            <% var helpers = []; activities.forEach((activity, index) => {if(activity.Helper == 1){helpers.push(activity);}}) %>
+
+            <div class="value-section">
+                <table class="width100">
+                    <tr>
+                        <td class="behavior-title">Activities</td>
+                        <td class="behavior-value">
+                        <% actList.forEach((activity, index) => { %>
+                            <% if(activity.Helper != 1) { %>
+                                <%= activity.ActivityName %><% if(index != actList.length - 1) { %>,<% } %>
+                            <% } %>
+                        <% }) %>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <% if(helpers.length > 0) { %>
+            <div class="value-section">
+                <table class="width100">
+                    <tr>
+                        <td class="behavior-title">Helper Jobs</td>
+                        <td class="behavior-value">
+                        <% helpers.forEach((activity, index) => { %>
+                            <% if(activity.Helper == 1) { %>
+                                <%= activity.ActivityName %><% if(index != helpers.length - 1) { %>,<% } %>
+                            <% } %>
+                        <% }) %>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <% } %>
+    </div>
+    
+    <!-- REMINDERS -->
+    <% if(reminders.length > 0) { %>
+    <div class="section bg-gray margin-bottom-40px">
+        <div class="margin-bottom-20px"><h2 class="center-text font-22px">Reminders</h2></div>
+        <% reminders.forEach((reminder, index) => { %>
+        <div class="value-section reminders-section">
+                <%- reminder.contents %>
+        </div>
+        <% }) %>
+    </div>
+    <% } %>
+    <div class="section bg-gray margin-top-40px">
+        <%- footer %>
+    </div>
+</div>
 </html>

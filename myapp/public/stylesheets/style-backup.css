@@ -231,7 +231,6 @@ svg{
 .minWidth500px{min-width: 500px !important;}
 .minWidth600px{min-width: 600px !important;}
 
-.maxWidth200px{max-width: 200px !important;}
 .maxWidth250px{max-width: 250px !important;}
 .maxWidth300px{max-width: 300px !important;}
 .maxWidth350px{max-width: 350px !important;}
@@ -449,7 +448,6 @@ svg{
 .inlineBlock{display: inline-block;}
 .borderBox{box-sizing: border-box !important;}
 .hideOverflow{overflow: hidden !important;}
-.side-scrollable{overflow-y: hidden; overflow-x: auto;}
 
 /* ------------ POSITIONING ------------- */
 .relative{position: relative;}
@@ -594,8 +592,6 @@ svg{
 .circleButton:hover{
   
 }
-
-.no-click{pointer-events: none;}
 
 .disabledButton{filter: grayscale(100%) !important; cursor: default !important;}
 .disabledButton:hover, .disabledButton:active{filter: grayscale(100%) !important;}
@@ -988,9 +984,9 @@ svg{
   .side-header-link.active{border-left: 8px solid var(--ThemeColor2Light);}
   .side-header-title{padding: 50px 15px; font-size: 40px;}
   .side-header-submenu-link{font-size: 35px !important;}
-  .content-with-side-header{margin-left: 0; padding-top: calc(var(--sideHeaderBurgerHeight) + 50px) !important;}
+  .content-with-side-header{margin-left: 0; padding-top: calc(var(--sideHeaderBurgerHeight) + 15px) !important;}
   .side-header-mobile-burger{display: block; z-index: 6;}
-  .page-with-side-menu{overflow-x: hidden;}
+  .page-with-side-menu{display: flex; overflow-x: hidden;}
   .content-with-side-header .formWindow{left: 0; width: 100%;}
 }
 /* Mobile friendly stuff */
@@ -1018,7 +1014,6 @@ svg{
 
   .heavyPadding{padding: 30px !important;}
 
-  .mobileMarginBottom30{margin-bottom: 30px;}
   .width100Mobile{width: 100% !important; margin-bottom: 10px;}
   .width90Mobile{width:90% !important; margin-bottom: 10px;}
   .flexContainer{ flex-direction: column;}
@@ -1038,6 +1033,8 @@ svg{
   }
 
   .toggleable{font-size: 40px; padding: 1em 0px;}
+
+  .contentWithSidebar{flex-direction: column-reverse; align-items: center;}
 
   .buttonAreaGrid{
     width: 80%;

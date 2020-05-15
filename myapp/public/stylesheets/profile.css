@@ -36,12 +36,11 @@
     background: none;
     box-shadow: none;
     width: 70%;
-    color: var(--darkGray3);
+    color: var(--DarkTextColorLight);
 }
 
 label{
-    float: left;
-    color: var(--darkGray3);
+    color: var(--DarkTextColorLight);
 }
 
 
@@ -63,7 +62,6 @@ label{
 /* Tooltip container */
 .edit-image-tooltip {
     position: relative;
-    display: inline-block;
   }
   
 /* Tooltip text */
@@ -89,7 +87,6 @@ label{
 .imageContainer{
     text-align: center;
     position: relative;
-    width: 100%;
 }
 
 .imageContainer:hover{
@@ -99,10 +96,8 @@ label{
 
 .imageContainer img{
     border: 1px solid black;
-    border-radius: 50%;
-    width: 20vw;
-    height: 20vw;
-    margin: 0 auto 20px auto !important;
+    max-width: 100%;
+    border-radius: 16px;
 }
 
 .imageContainer img:hover{
@@ -129,23 +124,14 @@ label{
     margin-bottom: 20px;
 }
 
-.deleteButton{
-    background: var(--reportsColorDark);
-    color: var(--lightGray2);
-}
-
-.deleteButton:hover{
-    filter: brightness(110%);
-}
-
-.deleteButtonActive{
-    background: var(--reportsColor) !important;
-    box-shadow: 0px 0px 6px var(--reportsColorDark) !important;
+.deleteButtonConfirm{
+    background: var(--ThemeColor4) !important;
+    box-shadow: 0px 0px 6px var(--ThemeColor4) !important;
 }
 
 .saveButton{
     background: var(--adminColor);
-    color: var(--lightGray1);
+    color: var(--LightTextColor);
 }
 
 .saveButton:hover{
@@ -197,7 +183,7 @@ label{
         margin: 0 auto 20px auto !important;
     }
 
-    .profileSection{ width: 90%; }
+    .profileSection{ width: 100%; }
 
     .profileSection .profileList{ width: 90%; padding: 30px 0px 20px 0px;}
 }

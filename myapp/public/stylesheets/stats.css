@@ -1,58 +1,58 @@
-/* <ul> list for Header bar */
-.headerStyle {
-  margin-bottom: 0px;
-}
-
-.headerStyle2 {
-  font-size: 1.6em;
-  font-weight: 400;
-  display: inline-block;
-  list-style-type: none;
-  text-align: left;
-  background: rgba(10, 65, 76);
-  color: white;
-}
-
-/* Each li is an element in the header, usually an <a> tag */
-.headerStyle2 li{
-  display: inline; /* List everything horizontally */
-  
-}
-
-/* Actual header button styling */
-.headerStyle2 a {
-  transition: 0.2s background-color;
-  display: inline-block;
-  color: var(--lightGray1);
-  text-decoration: none;
-  padding: 20px 30px;
-  margin: 0;
-}
-
-.headerStyle2 a:hover{
-  background-color: var(--blue3);
+canvas {
+  width: 80% !important; 
+  margin: auto; 
+  height: auto !important; 
+  font-size: 16px !important;
 }
 
 .canvasObj {
   background-color: white;
-  margin-top: 65px;
   margin-bottom: 70px;
 }
 
-.newLine {
-display: block;
-content: "\A\A";
-white-space: normal;
+svg {flex-grow: 1; margin: auto;}
+
+.pieMin {
+  width: fit-content;
+  height: auto;
+  max-width: 85%;
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  justify-self: left;
 }
 
-#newchart {
-  margin-top: 75px;
+.select-column{
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.select-column select{
+  margin-bottom: 10px;
 }
 
 #deleteButton {
-  /*position: relative; 
-  */right: 0%;
-  top: 0%;
+  color:rgb(143, 32, 32);
+  background-color: rgb(199, 47, 47);
+  border-color: rgb(143, 32, 32);
+  cursor: pointer;
+}
+
+.label {
+  white-space: pre-wrap;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: bold;
+  font-size: 11.5pt;
+}
+
+.arrow-down-make {
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.arrow-down {
+  font-family: 'Times New Roman', Times, serif;
 }
 
 .deleteButton {
@@ -93,12 +93,8 @@ white-space: normal;
   z-index: 9000;
 }
 
-.lab {
-  margin-top: 8em;
-}
-
 .startD {
-  margin-right: 2em;
+  margin-top: 3em;
 }
 
 div.tooltip-pie {
@@ -249,7 +245,7 @@ max-height: 100%;
 .mobileHeader .links a{
 text-align: center;
 text-decoration: none;
-color: var(--lightGray1);
+color: var(--LightTextColor);
 width: 100%;
 font-size: 10vh;
 padding: 20px 0px;
@@ -275,6 +271,8 @@ top: 0;
 .headerStyle{
   display: none;
 }
+
+canvas{width: 100% !important; max-height: 1000px;}
 
 .mobileHeader{
   display: block;

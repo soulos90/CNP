@@ -41,20 +41,16 @@ router.get('/', auth.checkAuthenticated, function (req, res, next) {
               console.log(err);
             }
             var [pottyAccidents] = accidentCount[0];
-            console.log(pottyAccidents);
             try {
               Students[i].pottyAccidents = pottyAccidents.RestroomAccidentNumber;
             } catch (e) {
               Students[i].pottyAccidents = 'err';
-              console.log(e);
             }
             var [pottyBreaks] = pottyCount[0];
-            console.log(pottyBreaks);
             try {
               Students[i].pottyBreaks = pottyBreaks.RestroomActivityNumber;
             } catch (e) {
               Students[i].pottyBreaks = 'err';
-              console.log(e);
             }
 
             var looper = act[0];
@@ -80,7 +76,16 @@ router.get('/', auth.checkAuthenticated, function (req, res, next) {
 
 });
 function bottomLayer(res, Students, con) {
-  console.log(Students);
   res.render('reports.ejs', { title: 'CNP Daily Report', reports: Students });
 }
+
+router.post('/deleteevent', auth.checkAuthenticated, function(req, res){
+  var sql = "CALL DeleteDailyActivity('" + req.body.stuId + "','" + req.body.actId + "');";
+  con.query(sql, function (err, result) {
+      if (err) res.end();
+      res.end();
+  });
+  
+});
+
 module.exports = router;

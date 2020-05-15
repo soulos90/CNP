@@ -32,6 +32,7 @@ HTML Format:
     text-align: center;
     justify-content: center;
     flex-wrap: wrap;
+    margin-bottom: 120px;
 }
 
 /* Image in each listing with border around it */
@@ -51,7 +52,7 @@ HTML Format:
     position: relative;
     transition: box-shadow 0.1s !important;
     transition: opacity 0.2s ease-in;
-    background: var(--lightGray1);
+    background: var(--LightContentBackground);
     border-radius: 20px;
     margin: 5px;
     display: inline-block;
@@ -69,7 +70,7 @@ HTML Format:
 /* On small screens, show three students per row */
 @media screen and (max-width: 1200px) {
     .blockList{
-        margin-bottom: 30vh;
+        margin-bottom: 210px;
     }
     .blockList li { 
         max-width: 38%; 
@@ -83,8 +84,10 @@ HTML Format:
         max-width: 90% !important;
     }
 
+    .selectionButtons li{width: 90% !important;}
+
     .selectionButtons a{
-        padding: 15vh 0px 15vh 0px !important;
+        padding: 15vh 30px 15vh 30px !important;
     }
 
     /* Size of Activities text */
@@ -98,7 +101,7 @@ HTML Format:
 }
 
 .name{
-    color: var(--darkGray4);
+    color: var(--DarkTextColorLight);
     font-size: 1.8em;
 }
 
@@ -106,7 +109,7 @@ HTML Format:
    on the tracking page */
 .selectedStudent{
     position: relative;
-    background-color: var(--lightGray3) !important;
+    background-color: var(--LightTextColorDark) !important;
     box-shadow: inset 0px 0px 6px 3px var(--darkGray3) !important;
 }
 
@@ -127,7 +130,7 @@ HTML Format:
     width: 100%;
     opacity: 0;
     transition: 0.1s;
-    background-color: var(--accentColor2Light);
+    background-color: var(--ThemeColor2Light);
   }
 
   .selectedStudent .checkmarkOverlay{ opacity: 0.3; }
@@ -160,16 +163,16 @@ HTML Format:
   /* Each li is the container for the button */
   .selectionButtons li{
     display: inline-block;
-    width: 80%;
+    width: 60%;
     margin-bottom: 30px;
   }
 
   /* This is the button itself */
   .selectionButtons a{
     transition: 0.1s all;
-    color: var(--lightGray1);
-    font-size: 6em;
-    padding: 10vh 0px 10vh 0px;
+    color: var(--LightTextColor);
+    font-size: 70px;
+    padding: 10vh 10px 10vh 10px;
     display: block;
     text-decoration: none;
     cursor: pointer;
@@ -186,7 +189,7 @@ HTML Format:
       padding: 20px;
       margin: 0;
       font-size: 3vw;
-      color: var(--darkGray3);
+      color: var(--DarkTextColorLight);
   }
 
   /* Shows less Activities per row since the text is on one line */

@@ -4,10 +4,16 @@ const auth = require('../public/javascripts/loginScripts');
 const nodemailer = require('nodemailer');
 var ejs = require('ejs');
 
+router.post('/emailReport', auth.checkAuthenticated, (req, res) => {
+  var reports = JSON.parse(req.body.report);
+  console.log(reports);
+  res.render('emailReport.ejs', {reports: reports});
+});
+
 /* GET home page. */
 router.get('/', auth.checkAuthenticated, function (req, res, next) {
   var Students = [];
-  var daily_query = "CALL PullUnhiddenStudents();";
+  var daily_query = "CALL PullUnhiddenStudentsEmail();";
   con.query(daily_query, function (err, dailyStudents) {
     if (err) throw err;
     recurseDailies(Students, dailyStudents, 0, res);
@@ -29,7 +35,6 @@ router.get('/', auth.checkAuthenticated, function (req, res, next) {
       con.query(activities_query, function (err, act) {
         if (err) throw err;
         var looper = act[0];
-        console.log(activities_query)
         looper.forEach(element => {
           if (element) {
             Students[i].listOfActivities.push(element);
@@ -40,13 +45,16 @@ router.get('/', auth.checkAuthenticated, function (req, res, next) {
           if (err) {
             console.log(err)
           }
-          [result] = result[0];
-          result = JSON.parse(JSON.stringify(result));
-          Students[i].listOfBehaviors = result;
 
+          [result] = result[0];
+          try {
+            result = JSON.parse(JSON.stringify(result));
+            Students[i].listOfBehaviors = result;
+          } catch (e) {
+            console.log(e);
+          }
           recurseDailies(Students, dailyStudents, i + 1, res);
           if (i == (dailyStudents[0].length) - 1) {
-            console.log(Students)
             bottomLayer(res, Students);
           }
         });//end daily beh query
@@ -59,7 +67,6 @@ router.get('/', auth.checkAuthenticated, function (req, res, next) {
   }
 });
 function bottomLayer(res, Students, ) {
-  console.log('bottom layer')
   var get_template = "CALL ShowUnhiddenTemplateObject();";
   con.query(get_template, function (err, behave) {
     behave = behave[0];
@@ -97,7 +104,6 @@ function bottomLayer(res, Students, ) {
       }
       else {
         remind.forEach((element) => {
-          // console.log(element);
           Reminders.push({ title: element.NameOf, contents: element.MainParagraphs });
         });
       }
@@ -151,12 +157,37 @@ function bottomLayer(res, Students, ) {
               }
             }
 
-            var header = "Creative Nature Daily Report"
-            var footer = "Sincerly, Brandy and Scott Kunakey"
+            con.query(`CALL ShowHeader();`, function (err, header_result) {
+              if (err) {
+                console.log(`Unable to pull header: ${err}`)
+              }
+              try {
+                [stripped_result] = header_result[0];
+                if (stripped_result) {
+                  var header = stripped_result.MainParagraphs.replace("--::a very ugly string that Nathan made so it wouldn't happen naturally::--",'&');
+                }
+              } catch (e) {
+                var header = 'error grabbing header'
+                console.log(e);
+              }
 
-            console.log(Students);
-            res.render('emailer.ejs', { title: 'CNP Daily Report', reports: Students, behaviors: Behaviors, reminders: Reminders, summary: summary, snack: snack, lunch: lunch, header: header, footer: footer });
+              con.query(`CALL ShowFooter();`, function (err, footer_result) {
+                if (err) {
+                  console.log(`Unable to pull footer: ${err}`)
+                }
+                try {
+                  [stripped_result] = footer_result[0];
+                  if (stripped_result) {
+                    var footer = stripped_result.MainParagraphs.replace("--::a very ugly string that Nathan made so it wouldn't happen naturally::--",'&');
+                  }
+                } catch (e) {
+                  var footer = 'error grabbing header'
+                  console.log(e);
+                }
 
+                res.render('emailer.ejs', { title: 'CNP Daily Report', reports: Students, behaviors: Behaviors, reminders: Reminders, summary: summary, snack: snack, lunch: lunch, header: header, footer: footer });
+              });//end footer query
+            });//end header query
           }); // end lunch query
         }); // end snack query
       }); // end summary query
@@ -166,10 +197,6 @@ function bottomLayer(res, Students, ) {
 
 router.post('/push-summary', auth.checkAuthenticated, function (req, res, next) {
   var summary = req.body.text;
-  // var parsedSummary = JSON.parse(mystring);
-  // console.log(`old: ${mystring}`);
-  // console.log(`new: ${newString}`);
-  // console.log(jsonString);
   save_template_query = `CALL AddDailySummary('${summary}');`;
   con.query(save_template_query, function (err, result) {
     if (err) {
@@ -182,6 +209,19 @@ router.post('/push-summary', auth.checkAuthenticated, function (req, res, next) 
   });
 
 
+});
+
+router.post('/refresh-behaviors', auth.checkAuthenticated, function (req, res, next) {
+  pull_daily_beh_query = `CALL PullDailyBehaviors(${req.body.id})`;
+  con.query(pull_daily_beh_query, function (err, result) {
+    if (err) {
+      console.log(err)
+      res.end()
+    }
+    [result] = result[0];
+    // result = JSON.parse(JSON.stringify(result));
+    res.send(result);
+  });
 });
 
 
@@ -239,67 +279,138 @@ router.post('/push-behavior', auth.checkAuthenticated, function (req, res, next)
   res.end();
 });
 
+router.post('/student-approved', auth.checkAuthenticated, function (req, res) {
+  var call_query = `CALL ApproveChanges(${req.body.id});`
+  con.query(call_query, function(err, msg){
+    if(err){console.log(err);}
+    else{res.end();}
+  });
+});
+
+router.post('/student-unapproved', auth.checkAuthenticated, function (req, res) {
+  var call_query = `CALL UnapproveChanges(${req.body.id});`
+  con.query(call_query, function(err, msg){
+    if(err){console.log(err);}
+    else{res.end();}
+  })
+});
+
 router.post('/send', (req, res) => {
-  var emails = [
-    'add@test.com',
-    // 'test@test.com',
-    // 'emails@test.com',
-    // 'here@test.com'
-  ] //updated later to emails from db
+  con.query(`CALL PullEmail(${req.body.id})`, function (err, email_pull) {
+    if (err) {
+      console.log(`Unable to add behaviors: ${err}`);
+    }
 
-  var names = [
-    "second name example",
-    // "third name example",
-    // "fourth name example",
-    // "fifth name example"
-  ] //updated later to parent names
-  //add more options for various student info later
+    pull_daily_beh_query = `CALL PullDailyBehaviors(${req.body.id})`;
+    con.query(pull_daily_beh_query, function (err, behavior_pull) {
+      if (err) {
+        console.log(err)
+      }
+      sendEmail(email_pull, req.body.listOfActivities, behavior_pull);
+    });//end daily beh query
+  });
 
-  async function sendEmail() {
+  async function sendEmail(pulled_emails, activities, pulled_personal_behaviors) {
+    var [parent_emails] = pulled_emails[0];
+    parent_emails = Object.values(parent_emails);
+    console.log(`Sending email(s) to: ${parent_emails}`)
+    var name = req.body.name
+    var [personal_behaviors] = pulled_personal_behaviors[0];
+    var personal_behavior_parsed = [];
+    var todaysBehaviorNames = JSON.parse(req.body.todaysBehaviorNames)
+    todaysBehaviorNames.forEach(behavior_name => {
+      personal_behavior_parsed.push({
+        name: behavior_name,
+        selection: personal_behaviors[behavior_name],
+        note: personal_behaviors[behavior_name + 'Note']
+      })
+    })
+
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465,
       secure: true, // true for 465, false for other ports
       auth: {
-        user: 'cnp.dev.tester@gmail.com',
+        user: 'cnp.daily.report@gmail.com',
         pass: process.env.EMAIL_PASSWORD
       },
       tls: {
         rejectUnauthorized: false
       }
     });
-    console.log(req.body.summaryHTML);
-    for (var i = 0; i < emails.length; i++) {
+    try {
       let info = await transporter.sendMail({
-        from: '"Creative Nature Playschool" <cnp.dev.tester@gmail.com>', // sender address
-        to: `${emails[i]}`, // list of receivers
+        from: '"Creative Nature Playschool" <cnp.daily.report@gmail.com>', // sender address
+        to: parent_emails, // list of receivers
         subject: "CNP Daily Report", // Subject line
+        //cc: 'creativenatureplayschool@gmail.com',
         text: "", // plain text body
         html: await ejs.renderFile('./views/emailTemplate.ejs', {
-          name: `${names[i]}`,
-          email: `${emails[i]}`,
+          name: name,
+          email: parent_emails,
+          header: req.body.header,
+          footer: req.body.footer,
           summary: req.body.summaryHTML,
+          reminders: JSON.parse(req.body.reminders),
           snack: req.body.snackHTML,
-          lunch: req.body.lunchHTML
+          lunch: req.body.lunchHTML,
+          activities: JSON.parse(activities),
+          behaviors: personal_behavior_parsed //personal_behavior_parsed[i].name .selection .note
         })
-        //behavior title[i]
-        //behavior selection[i]
-        //behavior note[i]
-        //select student id from today's roster, based on those id's grab the above stuff and more as needed
-
       });
-
-      console.log("Message sent: %s", info.messageId);
+      res.send({ name: name, emails: parent_emails, status: 'Sent', message: '' })
+    } catch (e) {
+      res.send({ name: name, emails: parent_emails, status: 'Failed', message: e.message})
     }
+  }
+  // res.end();
+});
 
+
+router.post('/render-email-view', (req, res) => {
+  // console.log('rendering page for')
+  // console.log(req.body)
+  pull_daily_beh_query = `CALL PullDailyBehaviors(${req.body.id})`;
+  con.query(pull_daily_beh_query, function (err, behavior_pull) {
+    if (err) {
+      console.log(err)
+    }
+    try {
+      renderEmail(req.body.listOfActivities, behavior_pull);
+    } catch (e) {
+      console.log(e);
+    }
+  });//end daily beh query
+
+  function renderEmail(activities, pulled_personal_behaviors) {
+    var name = req.body.name;
+    var [personal_behaviors] = pulled_personal_behaviors[0];
+    var personal_behavior_parsed = [];
+    var todaysBehaviorNames = JSON.parse(req.body.todaysBehaviorNames)
+    todaysBehaviorNames.forEach(behavior_name => {
+      personal_behavior_parsed.push({
+        name: behavior_name,
+        selection: personal_behaviors[behavior_name],
+        note: personal_behaviors[behavior_name + 'Note']
+      })
+    })
+
+    var email_HTML = ejs.renderFile('./views/emailTemplate.ejs', {
+        name: name,
+        header: req.body.header,
+        footer: req.body.footer,
+        summary: req.body.summaryHTML,
+        reminders: JSON.parse(req.body.reminders),
+        snack: req.body.snackHTML,
+        lunch: req.body.lunchHTML,
+        activities: JSON.parse(activities),
+        behaviors: personal_behavior_parsed //personal_behavior_parsed[i].name .selection .note
+      })
+    email_HTML.then(function (result) {
+      res.send({ rendered_HTML: result })
+    })
   }
-  try {
-    sendEmail();
-  } catch (e) {
-    console.log(e);
-  }
-  res.end();
 });
 
 

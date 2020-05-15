@@ -3,28 +3,16 @@
 <html>
 
   <head>
-    <nav><%- include header.ejs %></nav>
+    <%- include headerlinks.ejs %>
     <meta charset="utf-8">
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel='stylesheet' href='/stylesheets/stats.css' />
     <link rel='stylesheet' href='/stylesheets/charts.css' />
-    <link rel='stylesheet' href='/stylesheets/admin-styling.css' />
-    <link rel='stylesheet' href='/stylesheets/custom-table.css' />
-    <link rel='stylesheet' href='/stylesheets/blockList.css' />
-    <link rel='stylesheet' href='/stylesheets/footer.css' />
-    <link rel='stylesheet' href='/stylesheets/accordian.css' />
-    <link rel='stylesheet' href='/stylesheets/tabs.css' />
-    <link rel='stylesheet' href='/stylesheets/form.css' />
-    <link rel='stylesheet' href='/stylesheets/switch.css' />
-    <link rel='stylesheet' href='/stylesheets/ulList.css' />
-    <link rel='stylesheet' href='/stylesheets/checkbox.css' />
-    <link rel="stylesheet" href="/stylesheets/prettydropdowns.css">
 
     <script src="/javascripts/utilityScripts.js"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="/javascripts/jquery.prettydropdowns.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <script src="https://www.chartjs.org/samples/latest/utils.js"></script>
@@ -41,19 +29,17 @@
     <!-- Color scale -->
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
+    <script type="text/javascript" src="javascripts/statscripts/pie.js"></script>
+    <script type="text/javascript" src="javascripts/statscripts/line-chart.js"></script>
+
   </head>
+
 
   <body>
 
     <!-- Navigation -->
-    <div class="headerStyle2" id ="navigation">
+    <div id ="navigation" style="display:none">
       <nav class="navbar-expand-lg">
-        <span class="navbar-brand">CNP Statistics
-          <% if (startDate == null) { %>
-            <%= "No Data" %>
-          <% } %>  
-        </span>
-        
           <!-- Month selection -->
           <ul class="navbar-nav">
             <li class="nav-item">
@@ -72,18 +58,40 @@
       </nav>
     </div> <!-- end navigation -->
 
-    <!-- Drop down for adding a new chart -->
-    <div id="charts">
-      <select id="newchart" class="pretty-classic">
-        <option value="pie">Pie Chart</option>
-        <option value="line">Line Chart</option>
-      </select>
-
-      <ul id="selectionButtons" class="selectionButtons">
-        <li><a id="studentButton" class="accent2Light-BG" onclick="makeChart()">Add a New Chart</a></li>
-      </ul>
+    <div class="page-with-sidemenu">
+      <div onclick="$(this).toggleClass('active'); toggleBodyOverflow();" class="side-header-mobile-burger">
+        <i class="fa fa-bars"></i>
       </div>
+      <%- include header.ejs %>
+      <div class="content-with-side-header noPadding">
+        <!-- chart panel bar -->
+        <div class="width100 dark-content-BG flex centerFlexMobile width90Mobile center">
+           <!-- Chart Panel -->
+          <div id="chartPanel" class="mobilePanel width200 center flexGrow1 margin10 borderRadiusSmall hideOverflow minWidth350px width45">
+            <div class="heavyPadding flex spaceBetween flexCollapseMobile flexAlignCenter width90 center">
+              <p class="marginLeft10 light-text font25px width100">Select a Chart </p>
+              
+              <div class="width90 center flex spaceBetween flexCollapseMobile flexAlignCenter">
+                <!-- Drop down for adding a new chart -->
+                <select id="newchart" class="arrow-down-make width40 width100Mobile">
+                  <option value="pie">Pie Chart</option>
+                  <option value="line">Line Chart</option>
+                </select>
 
+                <!-- Make Chart button-->
+                <a class="font15px marginRight10 padding10px theme-color2-light-BG borderRadiusLarge light-text width40 width100Mobile centerText" onclick="makeChart()">Add Chart</a> 
+              </div>
+            </div>
+          </div> <!-- end chart panel --> 
+        </div> <!-- End chart panel bar -->
+
+        <!-- Charts -->
+        <div id="charts" class="flex flexColumn flexAlignCenter width90 center">
+          
+        </div>
+      </div>
+    </div> <!-- End chart --> 
+    
       <script>
         var chartArray = [];
         var curId = 0;
@@ -105,6 +113,7 @@
           return colorArray;
         }
 
+        //Make each chart object
         function makeChart() {
           var id = "chartObject" + curId;
           var selected = document.getElementById('newchart').options[document.getElementById('newchart').selectedIndex].value;
@@ -145,6 +154,7 @@
           }
         };
 
+        //Delete chart object
         function deleteChart(id) {
           console.log(chartArray, id);
           chartArray.forEach((element) => {
@@ -153,10 +163,10 @@
             }
           });
           document.getElementById(id).remove();
-          console.log("delete a chart")
         }
 
       </script>
+
 
 
     <!-- SCATTER PLOT -->
@@ -188,7 +198,7 @@
         var selection = "Students";
         var beta = document.getElementById('option2' + caller).options[document.getElementById('option2' + caller).selectedIndex].text;
         var id = document.getElementById('optionid1' + caller).options[document.getElementById('optionid1' + caller).selectedIndex].value;
-        var start = document.getElementById('syear'+caller).value + '-' + document.getElementById('smonth'+caller).value + '-' + document.getElementById('sday'+caller).value;
+        var start = document.getElementById('syear' + caller).value + '-' + document.getElementById('smonth' + caller).value + '-' + document.getElementById('sday' + caller).value;
         var end = document.getElementById('eyear'+caller).value + '-' + document.getElementById('emonth'+caller).value + '-' + document.getElementById('eday'+caller).value;
         theUrl = window.location.href+'/getdata';
         data = "id=" + id + "&prime=" + selection + "&beta=" + beta + "&weather=" + weather + "&start=" + start + "&end=" + end + "&caller=" + caller + "&chart=Pie";
@@ -196,6 +206,7 @@
         httpPostAsync(theUrl,data,callback); 
       }
 
+      //Pie Data
       function gotDataPie(data) {
         data = JSON.parse(data);
         var datum = [];
@@ -257,6 +268,7 @@
         httpPostAsync(theUrl,data,callback); 
       }
 
+      //Line Data
       function gotDataLine(data) {
         data = JSON.parse(data);
         var id;
@@ -472,6 +484,7 @@
         var date = new Date();
         var moreThanZero = false;
         var startdate = document.getElementById('hiddenstartDate').value;
+        var badVariableName = new Date(startdate);
         startdate = (new Date(startdate)).getFullYear();
         var yearDrop = document.getElementById('syear' + id);
 
@@ -486,11 +499,18 @@
             yearDrop.appendChild(option);
         }
         if(moreThanZero) {
+          yearDrop.selectedIndex = 1;
           document.getElementById('smonth' + id).selectedIndex = date.getMonth();
+        }
+        else{
+          document.getElementById('smonth' + id).selectedIndex = badVariableName.getMonth();
         }
         sgenDays(id);
         if(moreThanZero) {
-          document.getElementById('sday' + id).selectedIndex = date.getMonth() - 1;
+          document.getElementById('sday' + id).selectedIndex = date.getDate() - 1;
+        }
+        else{
+          document.getElementById('sday' + id).selectedIndex = badVariableName.getDate() - 1;
         }
         
         yearDrop = document.getElementById('eyear' + id);
@@ -515,7 +535,7 @@
         var years = document.getElementById('syear' + id);
         var year = years.options[years.selectedIndex].text;
         var day = document.getElementById('sday' + id);
-        month = new Date(Date.parse(month +" 1, 2012")).getMonth()+1
+        month = new Date (2012,(parseInt(month)), 1, 1, 1, 1 ).getMonth()+1
         var daysinmonth = new Date(year, month, 0).getDate();
         $(day).empty();
         for(var i = 1; i <= daysinmonth; ++i){
@@ -532,7 +552,7 @@
         var years = document.getElementById('eyear' + id);
         var year = years.options[years.selectedIndex].text;
         var day = document.getElementById('eday' + id);
-        month = new Date(Date.parse(month +" 1, 2012")).getMonth()+1
+        month = new Date (2012,(parseInt(month)), 1, 1, 1, 1 ).getMonth()+1
         var daysinmonth = new Date(year, month, 0).getDate();
         $(day).empty();
         for(var i = 1; i <= daysinmonth; ++i){
@@ -551,13 +571,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
     <!-- local javascript -->
-    <script type="text/javascript" src="javascripts/statscripts/pie.js"></script>
-    <script type="text/javascript" src="javascripts/statscripts/line-chart.js"></script>
+    
     <script type="text/javascript" src="javascripts/statscripts/navigation.js"></script>
-    <!--<script type="text/javascript" src="javascripts/statscripts/radar-chart.js"></script> --> 
-    <!--<script type="text/javascript" src="javascripts/statscripts/radar-chart.js"></script> --> 
-    <script type="text/javascript" src="javascripts/statscripts/bar-chart.js"></script>
-    <!-- <script type="text/javascript" src="javascripts/statscripts/bubble-chart.js"></script> -->
-    <!-- <script type="text/javascript" src="javascripts/statscripts/scatter-chart.js"></script> -->
+    
   </body>
 </html>

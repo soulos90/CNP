@@ -21,7 +21,7 @@ HTML Formatting:
 .formWindow {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    z-index: 7; /* Sit on top */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
@@ -34,11 +34,12 @@ HTML Formatting:
   /* The actual pop-up box that contains everything in the form */
   .formWindow-content {
     display: flex;
+    position: relative;
     flex-direction: column;
     border-radius: 4px;
-    background-color: var(--lightGray1);
+    background-color: var(--LightTextColor);
     margin: 2% auto; /* 15% from the top and centered */
-    width: 1000px; /* Could be more or less, depending on screen size */
+    width: 900px; /* Could be more or less, depending on screen size */
     padding: 30px;
     box-shadow: 0px 0px 15px 1px var(--darkGray2);
   }
@@ -54,14 +55,14 @@ HTML Formatting:
     padding: 10px;
     font-size: 2em;
     border-radius: 2px;
-    color: var(--adminColor);
-    border: 2px solid var(--adminColor);
+    color: var(--ThemeColor2Light);
+    border: 2px solid var(--ThemeColor2Light);
     margin-top: 20px;
   }
   
   .formSubmitButton:hover{
-    background: var(--adminColor);
-    color: var(--lightGray1);
+    background: var(--ThemeColor2Light);
+    color: var(--LightTextColor);
   }
 
   .formSubmitButton:active{
@@ -71,13 +72,14 @@ HTML Formatting:
 
   /* The Close Button at the top right */
   .close {
-    position: relative;
-    color: var(--darkGray3);
+    position: absolute;
+    color: var(--DarkTextColorLight);
     right: 10px;
     top: 10px;
-    font-size: 80px;
+    height: 60px;
+    font-size: 60px;
     font-weight: bold;
-    line-height: 0;
+    line-height: 100%;
   }
   
   .close:hover,

@@ -3,6 +3,7 @@ var router = express.Router();
 var uploads = require('../public/javascripts/uploads');
 const jo = require('jpeg-autorotate');
 const auth = require('../public/javascripts/loginScripts');
+const bcrypt = require('bcrypt');
 const fs = require('fs');
 
   router.post('/addstudent', auth.checkAuthenticated, function(req, res){
@@ -13,7 +14,8 @@ const fs = require('fs');
       "','" + req.body.sun + "','" + req.body.halfDay + "','" + req.body.enroll + "','" + req.body.allergies + "','" + req.body.accommodations + "');";
     console.log(sql);
     con.query(sql, function (err, result) {
-        if (err) throw(err);
+        if (err) {
+          throw(err);}
         res.end();
     });
   });
@@ -22,9 +24,10 @@ const fs = require('fs');
               "', '" + req.body.G1Phone + "', '" + req.body.G2Name + "', '" + req.body.G2EMail + "', '" + req.body.G2Phone + "', '" + req.body.mon + 
               "', '" + req.body.tue + "', '" + req.body.wed + "', '" + req.body.thu + "', '" + req.body.fri + "', '" + 0 + "', '" + 0 + "', '" + req.body.fullday + 
               "', '" + 1 + "');";
-              console.log(sql);
+    console.log(sql);
     con.query(sql, function (err, result) {
-        if (err) res.end();
+        if (err){
+          res.end();}
         res.end();
     });
   });
@@ -104,8 +107,23 @@ const fs = require('fs');
     });
   });
 
-  router.post('/addreminder', auth.checkAuthenticated, function(req, res){
-    var sql = "CALL AddRemindersObject('" + req.body.name + "', '" + req.body.paragraph + "');";
+  router.post('/hidereminder', auth.checkAuthenticated, function(req, res){
+    var sql;
+    if(req.body.hide == "true"){
+      sql = "CALL HideRemindersObject('" + req.body.id + "');";
+    }
+    else{
+      sql = "CALL UnhideRemindersObject('" + req.body.id + "');";
+    }
+    console.log(sql);
+    con.query(sql, function (err, result) {
+        if (err) res.end();
+        res.end();
+    });
+  });
+
+  router.post('/editreminder', auth.checkAuthenticated, function(req, res){
+    var sql = "UPDATE cnp_data.RemindersObject SET NameOf = '" + req.body.name + "', MainParagraphs = '" + req.body.content + "' WHERE TemplateId = '" + req.body.id + "';";
     console.log(sql);
     con.query(sql, function (err, result) {
         if (err) res.end();
@@ -139,6 +157,41 @@ const fs = require('fs');
     });
   });
 
+  router.post('/editbehavior', auth.checkAuthenticated, function(req, res){
+    var sql = "UPDATE cnp_data.TemplateObject SET NameOf = '" + req.body.name + "', CategoryOne = '" + req.body.op1 + "', CategoryTwo = '" + req.body.op2 + "', CategoryThree = '" + req.body.op3 + "', CategoryFour = '" + req.body.op4 + "', CategoryFive = '" + req.body.op5 + "' WHERE TemplateId = '" + req.body.id + "';";
+    console.log(sql);
+    con.query(sql, function (err, result) {
+        if (err) res.end();
+        res.end();
+    });
+  });
+
+  router.post('/hidebehavior', auth.checkAuthenticated, function(req, res){
+    var sql;
+    if(req.body.hide == "true"){
+      sql = "CALL HideTemplateObject('" + req.body.id + "');";
+    }
+    else{
+      sql = "CALL UnhideTemplateObject('" + req.body.id + "');";
+    }
+    console.log(sql);
+    con.query(sql, function (err, result) {
+        if (err) res.end();
+        res.end();
+    });
+  });
+
+router.post('/addreminder', auth.checkAuthenticated, function (req, res) {
+  var data = req.body.data;
+  data = data.replace("--::a very ugly string that Nathan made so it wouldn't happen naturally::--",'&');
+    var sql = "CALL AddRemindersObject('" + req.body.name + "', '" + data + "');";
+    console.log(sql);
+    con.query(sql, function (err, result) {
+        if (err) res.end();
+        res.end();
+    });
+  });
+
   router.post('/emailsettings', auth.checkAuthenticated, function(req, res){
     var form = req.body.form;
     var sql;
@@ -158,12 +211,13 @@ const fs = require('fs');
   router.post('/saveemailsettings', auth.checkAuthenticated, function(req, res){
     var form = req.body.form;
     var data = req.body.data;
+    data = data.replace("--::a very ugly string that Nathan made so it wouldn't happen naturally::--",'&');
     var sql;
     if(form == "header"){
-      sql = "CALL ChangeHeader('" + data + "');";
+      sql = `CALL ChangeHeader('${data}');`;
     }
     else if(form == "signature"){
-      sql = "CALL ChangeFooter('" + data + "');";
+      sql = `CALL ChangeFooter('${data}');`;
     }
     console.log(sql);
     con.query(sql, function (err, result) {
@@ -171,61 +225,112 @@ const fs = require('fs');
         res.end();
     });
   });
+
+  router.post('/addroster', auth.checkAuthenticated, function(req, res){
+    var student = req.body.id;
+    var sql = "CALL PullHiddenStudents();";
+    console.log(sql);
+    con.query(sql, function (err, result) {
+      if (err) res.end();
+      var found = false;
+      result[0].forEach((element)=>{
+        if(element.StudentId == student){
+          found = true;
+        }
+      });
+
+      if(found){
+        sql = "CALL StudentAppears(" + student + ");";
+      }
+      else{
+        sql = "CALL MarkStudentUnabsent(" + student + ");";
+      }
+      console.log(sql);
+      con.query(sql, function (err, result) {
+        if (err) res.end();
+        res.end();
+      });
+    });
+  });
+  
+  router.post('/changeroster', auth.checkAuthenticated, function(req, res){
+    var student = req.body.id;
+    var whatdo = req.body.do;
+    var sql;
+    if(whatdo == "remove"){
+      sql = "CALL MarkStudentAbsent("+ student +");";
+    }
+    else if(whatdo == "add"){
+      StudentAppears
+      sql = "CALL MarkStudentUnabsent("+ student +");";
+    }
+    console.log(sql);
+    con.query(sql, function (err, result) {
+        if (err) res.end();
+        res.end();
+    });
+  });
+
   /* GET home page. */
   router.get('/', auth.checkAuthenticated, function(req, res, next) {
     var student_query = "CALL PullStudentsAndDayType();"; 
     var activity_query = "CALL ShowAllActivities();";
     var task_query = "SELECT * FROM cnp_data.Tasks;";
-    var get_reminders = "CALL ShowUnhiddenRemindersObject();";
+    var get_reminders = "CALL ShowAllRemindersObject();";
     var get_behaviors = "CALL ShowAllTemplateObject();";
-    var todays_students_query = "CALL PullUnhiddenStudents();"
-    con.query(student_query, function (err, sQuery) {
-      if (err) throw err;
-      con.query(activity_query, function (err, aQuery) {
+    var todays_students_query = "CALL PullUnhiddenStudents();";
+    var present_students = "SELECT s.StudentId, s.StudentName FROM cnp_data.Students s, cnp_data.ClassSession cs WHERE s.StudentId = cs.StudentId AND cs.CurrentDate=CURRENT_DATE AND cs.Absent=0;";
+    con.query(present_students, function(err,pStudents) {
+      if(err) throw err;
+      con.query(student_query, function (err, sQuery) {
         if (err) throw err;
-        con.query(task_query,function (err, tQuery){
-          if(err) throw err;
-          var tasks = [], completed = [];
-          for(var i = 0;i < tQuery.length;++i){
-            if(tQuery[i].Completed == 0){
-              tasks.push(tQuery[i]);
-            }
-            else{
-              completed.push(tQuery[i]);
-            }
-          }
-          con.query(get_reminders, function(err, remind){
-            remind = remind[0];
-            var Reminders = [];
-            if(remind.length == 0){
-              Reminders.push({title: "No reminders in database", value:-1});
-            }
-            else{
-              remind.forEach((element) => {
-                Reminders.push({title: element.NameOf, contents: element.MainParagraphs, id: element.TemplateId});
-              });
-            }
-            con.query(get_behaviors, function(err, behave){
-              behave = behave[0];
-              var Behaviors = [];
-              if(behave.length == 0){
-                Behaviors.push({title: "No behaviors in database", value:-1});
+        con.query(activity_query, function (err, aQuery) {
+          if (err) throw err;
+          con.query(task_query,function (err, tQuery){
+            if(err) throw err;
+            var tasks = [], completed = [];
+            for(var i = 0;i < tQuery.length;++i){
+              if(tQuery[i].Completed == 0){
+                tasks.push(tQuery[i]);
               }
               else{
-                behave.forEach((element) => {
-                  Behaviors.push({title: element.NameOf, cat1:element.CategoryOne, cat2:element.CategoryTwo, cat3:element.CategoryThree, cat4:element.CategoryFour, cat5:element.CategoryFive,id:element.TemplateId});
-                })
+                completed.push(tQuery[i]);
               }
-              con.query(todays_students_query, function (err, t_students) {
-                if (err) throw err;
-                res.render('admin.ejs', {title: 'Admin Page', students: sQuery[0],  activities: aQuery[0], tasks: tasks, compTasks: completed, reminders: Reminders, behaviors: Behaviors, todays_students: t_students[0]});
+            }
+            con.query(get_reminders, function(err, remind){
+              remind = remind[0];
+              var Reminders = [];
+              if(remind.length == 0){
+                Reminders.push({title: "No reminders in database", value:-1});
+              }
+              else{
+                remind.forEach((element) => {
+                  Reminders.push({title: element.NameOf, contents: element.MainParagraphs, id: element.TemplateId,hidden:element.Hidden});
+                });
+              }
+              
+              con.query(get_behaviors, function(err, behave){
+                behave = behave[0];
+                var Behaviors = [];
+                if(behave.length == 0){
+                  Behaviors.push({title: "No behaviors in database", value:-1});
+                }
+                else{
+                  behave.forEach((element) => {
+                    Behaviors.push({title: element.NameOf, cat1:element.CategoryOne, cat2:element.CategoryTwo, cat3:element.CategoryThree, cat4:element.CategoryFour, cat5:element.CategoryFive,id:element.TemplateId,Hidden:element.Hidden});
+                  })
+                }
+                con.query(todays_students_query, function (err, t_students) {
+                  if (err) throw err;
+                  res.render('admin.ejs', {title: 'Admin Page', students: sQuery[0],  activities: aQuery[0], tasks: tasks, compTasks: completed, reminders: Reminders, behaviors: Behaviors, todays_students: t_students[0],present:pStudents});
+                });
               });
             });
           });
+          
         });
-        
       });
-    });
+  })
     
   });
 
@@ -242,7 +347,6 @@ const fs = require('fs');
       //'result' contains requested student [index 0] as well as 'OkPacket' [index 1]
       //strip away OkPacket, create selected_student as new array
       [selected_student] = result[0];
-      console.log(selected_student);
       res.render('profile.ejs', { title: 'Profile Page', student: selected_student });
     });
   });
@@ -311,10 +415,11 @@ router.post('/student-profile/:id/save-changes', auth.checkAuthenticated, functi
       `CALL UpdateStudentGuardian2(${req.params.id}, "${req.body.guardian2Name}", "${req.body.guardian2Email}", "${req.body.guardian2Number}");`,
       `CALL UpdateStudentBirthday(${req.params.id}, "${req.body.birthdate}")`,
       `CALL UpdateAccommodations(${req.params.id}, "${req.body.accommodations}");`,
+      `CALL UpdateStudentName(${req.params.id}, "${req.body.studentName}");`,
       `CALL UpdateAllergies(${req.params.id}, "${req.body.allergies}");`,
       `CALL UpdateStudentSchedule(${req.params.id}, ${req.body.mon}, ${req.body.tue}, ${req.body.wed}, ${req.body.thu}, ${req.body.fri}, ${req.body.fullDayFlag}, 1);`//${req.body.fullDayFlag}, ${req.body.isEnrolled});`
   ]
-
+  
     for (var i = 0; i < sql_calls.length; i++){
       update_student_query = sql_calls[i];
       var error_flag = false;
@@ -324,16 +429,51 @@ router.post('/student-profile/:id/save-changes', auth.checkAuthenticated, functi
             error_flag = true;
             console.log(err);
           }
+          if(i == sql_calls.length-1){
+            synccleaner(res,req,error_flag);
+          }
         });
       })(update_student_query, error_flag); //closure necesssary for async
     }
-    if (error_flag) {
-      req.flash('changes_error', "Error Updating Profile");
-    } else {
-      req.flash('changes_saved', "Profile Updated!");
-    }
-    res.end();
-  });
+    if(error_flag){req.flash('changes_error', "Save unsuccessful");}
+    else{req.flash('changes_saved', "Profile Saved!");}
+    res.redirect(`/admin/student-profile/${req.params.id}`);
+});
+
+function synccleaner(res,req,error_flag){
+  if (error_flag) {
+    req.flash('changes_error', "Error Updating Profile");
+  } else {
+    req.flash('changes_saved', "Profile Updated!");
+  }
+  res.end();
+}
+
+router.get('/reset-password', auth.checkAuthenticated, (req, res) => {
+  res.render('resetPassword.ejs');
+});
+
+router.post('/reset-password', auth.checkAuthenticated, async (req, res) => {
+  if (req.body.email !== 'default@cnp.com') {
+    try {
+      const hashedPassword = await bcrypt.hash(req.body.password, 10); //10 is good hash default value
+      push_user = `UPDATE Admins set Passwords = "${hashedPassword}" WHERE Email = "${req.body.email}";`//(Username, Email, Passwords, Names) VALUES ("${req.body.name}", "${req.body.email}", "${hashedPassword}", "temp");`
+      con.query(push_user, function (err, result) {
+        if (err) {
+          console.log(err);
+          res.send(err.sqlMessage)
+        } else {
+          res.redirect('/admin');
+        }
+      });
+    } catch (e) {
+      console.log(e);
+      res.redirect('/admin');
+    };
+  } else {
+    res.send('Cannot reset default password.');
+  }
+});
 
 
 module.exports = router;
