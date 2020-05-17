@@ -15,7 +15,7 @@ router.get('/', auth.checkAuthenticated, function (req, res, next) {
   var Students = [];
   var daily_query = "CALL PullUnhiddenStudentsEmail();";
   con.query(daily_query, function (err, dailyStudents) {
-    if (err) throw err;
+    if (err) res.end();
     recurseDailies(Students, dailyStudents, 0, res);
   })
 
@@ -33,7 +33,7 @@ router.get('/', auth.checkAuthenticated, function (req, res, next) {
       });
       activities_query = "CALL ShowStudentDailyActivitiesToday(" + Students[i].id + ");";
       con.query(activities_query, function (err, act) {
-        if (err) throw err;
+        if (err) res.end();
         var looper = act[0];
         looper.forEach(element => {
           if (element) {
@@ -344,7 +344,7 @@ router.post('/send', (req, res) => {
         from: '"Creative Nature Playschool" <cnp.daily.report@gmail.com>', // sender address
         to: parent_emails, // list of receivers
         subject: "CNP Daily Report", // Subject line
-        //cc: 'creativenatureplayschool@gmail.com',
+        cc: 'creativenatureplayschool@gmail.com',
         text: "", // plain text body
         html: await ejs.renderFile('./views/emailTemplate.ejs', {
           name: name,

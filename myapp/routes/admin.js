@@ -7,6 +7,7 @@ const bcrypt = require('bcrypt');
 const fs = require('fs');
 
   router.post('/addstudent', auth.checkAuthenticated, function(req, res){
+    
     var sql = "CALL CreateNewStudentFinal('" + req.body.name + "','" + req.body.birthday + "','" + req.body.contact +
      "','" + req.body.email + "','" + req.body.contactNum + "','" + req.body.contact2 + "','" + req.body.email2 + 
      "','" + req.body.contactNum2 + "','" + req.body.mon + "','" + req.body.tue +
@@ -15,7 +16,7 @@ const fs = require('fs');
     console.log(sql);
     con.query(sql, function (err, result) {
         if (err) {
-          throw(err);}
+          res.end();}
         res.end();
     });
   });
@@ -281,13 +282,13 @@ router.post('/addreminder', auth.checkAuthenticated, function (req, res) {
     var todays_students_query = "CALL PullUnhiddenStudents();";
     var present_students = "SELECT s.StudentId, s.StudentName FROM cnp_data.Students s, cnp_data.ClassSession cs WHERE s.StudentId = cs.StudentId AND cs.CurrentDate=CURRENT_DATE AND cs.Absent=0;";
     con.query(present_students, function(err,pStudents) {
-      if(err) throw err;
+      if(err) res.end();
       con.query(student_query, function (err, sQuery) {
-        if (err) throw err;
+        if (err) res.end();
         con.query(activity_query, function (err, aQuery) {
-          if (err) throw err;
+          if (err) res.end();
           con.query(task_query,function (err, tQuery){
-            if(err) throw err;
+            if(err) res.end();
             var tasks = [], completed = [];
             for(var i = 0;i < tQuery.length;++i){
               if(tQuery[i].Completed == 0){
@@ -321,7 +322,7 @@ router.post('/addreminder', auth.checkAuthenticated, function (req, res) {
                   })
                 }
                 con.query(todays_students_query, function (err, t_students) {
-                  if (err) throw err;
+                  if (err) res.end();
                   res.render('admin.ejs', {title: 'Admin Page', students: sQuery[0],  activities: aQuery[0], tasks: tasks, compTasks: completed, reminders: Reminders, behaviors: Behaviors, todays_students: t_students[0],present:pStudents});
                 });
               });
@@ -340,7 +341,7 @@ router.post('/addreminder', auth.checkAuthenticated, function (req, res) {
     var student_query = `CALL PullStudentData(${student_id})`;
     
     con.query(student_query, function (err, result) {
-      if (err) throw err;
+      if (err) res.end();
       if(result[0].length==0){
         res.redirect('/admin');
       }
@@ -390,7 +391,7 @@ router.post('/addreminder', auth.checkAuthenticated, function (req, res) {
           //end exif removal/rotation
 
           con.query(update_img_query, function (err, result) {
-            if (err) throw err;
+            if (err) res.end();
             req.flash('upload_successful', "Student Image Updated!");
             res.redirect(`/admin/student-profile/${req.params.id}`);
           });
@@ -403,7 +404,7 @@ router.post('/addreminder', auth.checkAuthenticated, function (req, res) {
       var delete_stu_query = `CALL DeleteStudent("${req.params.id}");`;
       con.query(delete_stu_query, function (err, result) {
         if (err) {
-          throw (err);
+          res.end();
         }
         res.redirect('/admin'); 
       });
@@ -435,9 +436,6 @@ router.post('/student-profile/:id/save-changes', auth.checkAuthenticated, functi
         });
       })(update_student_query, error_flag); //closure necesssary for async
     }
-    if(error_flag){req.flash('changes_error', "Save unsuccessful");}
-    else{req.flash('changes_saved', "Profile Saved!");}
-    res.redirect(`/admin/student-profile/${req.params.id}`);
 });
 
 function synccleaner(res,req,error_flag){
